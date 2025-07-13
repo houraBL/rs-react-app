@@ -57,6 +57,15 @@ export default class Main extends Component<MainProps, MainState> {
       console.log('hello');
       return <main className="bg-blue-900 flex-grow">Error: {error}</main>;
     }
+
+    if (characters.length === 0) {
+      return (
+        <main className="bg-blue-900 flex-grow flex items-center justify-center text-white text-xl">
+          No characters found.
+        </main>
+      );
+    }
+
     return (
       <main className="bg-blue-900 flex-grow">
         <div
