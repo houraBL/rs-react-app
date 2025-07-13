@@ -26,7 +26,7 @@ class App extends Component<AppProps, AppState> {
     return (
       <div className="min-h-screen flex flex-col">
         <Header onSearchSubmit={this.handleSearchChange} />
-        <Main />
+        <Main searchedTerm={this.state.search} />
         <Footer />
       </div>
     );

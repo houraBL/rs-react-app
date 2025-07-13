@@ -3,8 +3,9 @@ import CharacterCard, {
   type CharacterInfo,
 } from '../CharacterCard/CharacterCard';
 import MainLoader from '../MainLoader/MainLoader';
+import { fetchCharacters } from '../../api/api-client';
 
-type MainProps = object;
+type MainProps = { searchedTerm: string };
 
 interface MainState {
   characters: CharacterInfo[];
@@ -22,13 +23,21 @@ export default class Main extends Component<MainProps, MainState> {
     };
   }
 
-  async componentDidMount(): Promise<void> {
+  componentDidMount() {
+    this.loadCharacters(this.props.searchedTerm);
+  }
+
+  componentDidUpdate(prevProps: MainProps) {
+    if (prevProps.searchedTerm !== this.props.searchedTerm) {
+      this.loadCharacters(this.props.searchedTerm);
+    }
+  }
+
+  async loadCharacters(searchTerm: string) {
+    this.setState({ loading: true, error: null });
     try {
-      const request = await fetch('https://rickandmortyapi.com/api/character');
-      if (!request.ok)
-        throw new Error('Could not load your favorite characters');
-      const parsed = await request.json();
-      this.setState({ characters: parsed.results, loading: false });
+      const characters = await fetchCharacters(searchTerm);
+      this.setState({ characters, loading: false });
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : 'Unknown error occurred';
@@ -44,20 +53,23 @@ export default class Main extends Component<MainProps, MainState> {
           <MainLoader />
         </main>
       );
-    if (error)
+    if (error) {
+      console.log('hello');
       return <main className="bg-blue-900 flex-grow">Error: {error}</main>;
+    }
     return (
       <main className="bg-blue-900 flex-grow">
         <div
           className="flex flex-wrap gap-6 py-4 items-center justify-center"
           aria-label="characters-cards-container"
         >
-          {characters.map((characterInfo) => (
-            <CharacterCard
-              key={characterInfo.id}
-              characterInfo={characterInfo}
-            />
-          ))}
+          {characters &&
+            characters.map((characterInfo) => (
+              <CharacterCard
+                key={characterInfo.id}
+                characterInfo={characterInfo}
+              />
+            ))}
         </div>
       </main>
     );

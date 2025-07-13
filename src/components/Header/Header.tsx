@@ -30,7 +30,7 @@ export default class Header extends Component<HeaderProps, HeaderState> {
   handleClear() {
     this.setState({ search: '' });
     localStorage.setItem('search', '');
-    this.props.onSearchSubmit(this.state.search);
+    this.props.onSearchSubmit('');
   }
 
   render() {
