@@ -23,7 +23,7 @@ interface MainState {
 }
 
 export default class Main extends Component<MainProps, MainState> {
-  constructor(props: MainProps) {
+  constructor(props) {
     super(props);
     this.state = {
       characters: [],
@@ -32,7 +32,7 @@ export default class Main extends Component<MainProps, MainState> {
     };
   }
 
-  async componentDidMount(): void {
+  async componentDidMount(): Promise<void> {
     try {
       const request = await fetch('https://rickandmortyapi.com/api/character');
       if (!request.ok)
