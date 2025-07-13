@@ -3,6 +3,8 @@ import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import Main from './components/Main/Main';
 import { Component } from 'react';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
+import ErrorButton from './components/ErrorButton/ErrorButton';
 
 type AppProps = object;
 interface AppState {
@@ -24,11 +26,14 @@ class App extends Component<AppProps, AppState> {
 
   render() {
     return (
-      <div className="min-h-screen flex flex-col">
-        <Header onSearchSubmit={this.handleSearchChange} />
-        <Main searchedTerm={this.state.search} />
-        <Footer />
-      </div>
+      <ErrorBoundary key={this.state.search}>
+        <div className="min-h-screen flex flex-col relative">
+          <Header onSearchSubmit={this.handleSearchChange} />
+          <Main searchedTerm={this.state.search} />
+          <Footer />
+          <ErrorButton />
+        </div>
+      </ErrorBoundary>
     );
   }
 }
