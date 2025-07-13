@@ -1,23 +1,13 @@
 import { Component } from 'react';
-import CharacterCard from '../CharacterCard/CharacterCard';
+import CharacterCard, {
+  type CharacterInfo,
+} from '../CharacterCard/CharacterCard';
+import MainLoader from '../MainLoader/MainLoader';
 
 type MainProps = object;
 
 interface MainState {
-  characters: {
-    id: number;
-    name: string;
-    status: string;
-    species: string;
-    type: string;
-    gender: string;
-    origin: { name: string; url: string };
-    location: { name: string; url: string };
-    image: string;
-    episode: string[];
-    url: string;
-    created: string;
-  }[];
+  characters: CharacterInfo[];
   loading: boolean;
   error: null | string;
 }
@@ -48,10 +38,16 @@ export default class Main extends Component<MainProps, MainState> {
 
   render() {
     const { characters, loading, error } = this.state;
-    if (loading) return <main>Loading...</main>;
-    if (error) return <main>Error: {error}</main>;
+    if (loading)
+      return (
+        <main className="bg-blue-900 flex-grow flex items-center justify-center">
+          <MainLoader />
+        </main>
+      );
+    if (error)
+      return <main className="bg-blue-900 flex-grow">Error: {error}</main>;
     return (
-      <main className="bg-blue-900">
+      <main className="bg-blue-900 flex-grow">
         <div
           className="flex flex-wrap gap-6 py-4 items-center justify-center"
           aria-label="characters-cards-container"
