@@ -2,7 +2,7 @@ import { Component } from 'react';
 
 type CharacterCardProps = { characterInfo: CharacterInfo };
 
-interface CharacterInfo {
+export interface CharacterInfo {
   id: number;
   name: string;
   status: string;
