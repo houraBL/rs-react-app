@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import CharacterCard from '../CharacterCard/CharacterCard';
 
-type MainProps = object;
+type MainProps = {};
 
 interface MainState {
   characters: {
@@ -23,7 +23,7 @@ interface MainState {
 }
 
 export default class Main extends Component<MainProps, MainState> {
-  constructor(props) {
+  constructor(props: MainProps) {
     super(props);
     this.state = {
       characters: [],
