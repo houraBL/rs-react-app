@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import CharacterCard from '../CharacterCard/CharacterCard';
 
-type MainProps = {};
+type MainProps = object;
 
 interface MainState {
   characters: {
