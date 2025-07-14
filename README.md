@@ -1,6 +1,9 @@
 <<<<<<< HEAD
-# RS-school-react-2025-q3
+
+# rs-react-app
+
 =======
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -70,4 +73,5 @@ export default tseslint.config([
   },
 ]);
 ```
->>>>>>> 7de7944 (Initial commit)
+
+> > > > > > > 7de7944 (Initial commit)
