@@ -21,7 +21,7 @@ export default class ErrorButton extends Component<object, ErrorButtonState> {
     }
     return (
       <button
-        className="px-4 rounded-full h-10 bg-red-400 hover:cursor-pointer text-lg text-white font-bold fixed z-50 bottom-8 right-4"
+        className="px-4 rounded-full h-10 bg-red-400 hover:cursor-pointer text-lg text-white font-bold fixed z-50 bottom-16 right-4"
         onClick={this.triggerError}
       >
         Create error

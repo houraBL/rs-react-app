@@ -26,13 +26,13 @@ class App extends Component<AppProps, AppState> {
 
   render() {
     return (
-      <div className="min-h-screen flex flex-col relative">
-        <Header onSearchSubmit={this.handleSearchChange} />
+      <div className="min-h-screen flex flex-col relative w-full">
         <ErrorBoundary>
+          <Header onSearchSubmit={this.handleSearchChange} />
           <Main searchedTerm={this.state.search} />
           <ErrorButton />
+          <Footer />
         </ErrorBoundary>
-        <Footer />
       </div>
     );
   }
