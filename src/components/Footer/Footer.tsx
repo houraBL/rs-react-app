@@ -12,7 +12,7 @@ export default class Footer extends Component {
           rel="noreferrer"
           className="flex gap-2 items-center justify-center"
         >
-          <img src={RSSchoolLogo} className="h-6" alt="Vite logo" />
+          <img src={RSSchoolLogo} className="h-6" alt="RS School logo" />
           RS School
         </a>
         <a
@@ -21,7 +21,7 @@ export default class Footer extends Component {
           rel="noreferrer"
           className="flex gap-2 items-center justify-center"
         >
-          <img src={githubLogo} className="h-6" alt="Vite logo" />
+          <img src={githubLogo} className="h-6" alt="GitHub logo" />
           hourabl
         </a>
       </footer>
