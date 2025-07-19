@@ -23,8 +23,10 @@ export default class Header extends Component<HeaderProps, HeaderState> {
   }
 
   handleSearchClick() {
-    localStorage.setItem('search', this.state.search);
-    this.props.onSearchSubmit(this.state.search);
+    const trimmedValue = this.state.search.trim();
+    localStorage.setItem('search', trimmedValue);
+    this.setState({ search: trimmedValue });
+    this.props.onSearchSubmit(trimmedValue);
   }
 
   handleClear() {
