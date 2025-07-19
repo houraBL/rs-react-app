@@ -83,7 +83,7 @@ describe('Header', () => {
     });
   });
 
-  describe('LocalStorage Integration Tests', () => {
+  describe('LocalStorage Integration', () => {
     it('Retrieves saved search term on component mount', () => {
       localStorage.setItem('search', 'test');
       render(<Header onSearchSubmit={submitFunction} />);
