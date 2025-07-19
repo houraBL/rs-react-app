@@ -83,15 +83,22 @@ describe('Header', () => {
     });
   });
 
-  describe('LocalStorage Integration', () => {
-    it('Retrieves saved search term on component mount', () => {});
+  describe('LocalStorage Integration Tests', () => {
+    it('Retrieves saved search term on component mount', () => {
+      localStorage.setItem('search', 'test');
+      render(<Header onSearchSubmit={submitFunction} />);
+      expect(screen.getByDisplayValue('test')).toBeInTheDocument();
+    });
 
-    it('Overwrites existing localStorage value when new search is performed', () => {});
+    it('Overwrites existing localStorage value when new search is performed', async () => {
+      localStorage.setItem('search', 'test');
+      render(<Header onSearchSubmit={submitFunction} />);
+      const searchInput = screen.getByPlaceholderText('start typing...');
+      expect(searchInput).toHaveValue('test');
+      await userEvent.type(searchInput, 'rick');
+      const searchButton = screen.getByText('Search');
+      await userEvent.click(searchButton);
+      expect(localStorage.getItem('search')).toBe('testrick');
+    });
   });
 });
-
-/*
-  describe('testBlock', () => {
-    it('testName', () => {});
-  });
-*/
