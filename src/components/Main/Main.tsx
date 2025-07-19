@@ -1,9 +1,8 @@
 import { Component } from 'react';
-import CharacterCard, {
-  type CharacterInfo,
-} from '../CharacterCard/CharacterCard';
+import CharacterCard from '../CharacterCard/CharacterCard';
 import MainLoader from '../MainLoader/MainLoader';
 import { fetchCharacters } from '../../api/api-client';
+import type { CharacterInfo } from '../../types/character';
 
 type MainProps = { searchedTerm: string };
 
