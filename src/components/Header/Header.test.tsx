@@ -35,40 +35,40 @@ describe('Header', () => {
     it('Updates input value when user types', async () => {
       render(<Header onSearchSubmit={submitFunction} />);
       const searchInput = screen.getByPlaceholderText('start typing...');
-      await userEvent.type(searchInput, 'rick');
+      await userEvent.type(searchInput, 'rick', { delay: null });
       expect(searchInput).toHaveValue('rick');
     });
 
     it('Saves search term to localStorage when search button is clicked', async () => {
       render(<Header onSearchSubmit={submitFunction} />);
       const searchInput = screen.getByPlaceholderText('start typing...');
-      await userEvent.type(searchInput, 'rick');
+      await userEvent.type(searchInput, 'rick', { delay: null });
       const searchButton = screen.getByText('Search');
-      await userEvent.click(searchButton);
+      await userEvent.click(searchButton, { delay: null });
       expect(localStorage.getItem('search')).toBe('rick');
     });
 
-    it('Does not trim whitespace from search input before saving', async () => {
+    it('Trims whitespace from search input before saving', async () => {
       render(<Header onSearchSubmit={submitFunction} />);
       const searchInput = screen.getByPlaceholderText('start typing...');
-      await userEvent.type(searchInput, '  rick  ');
+      await userEvent.type(searchInput, '  rick  ', { delay: null });
       const searchButton = screen.getByText('Search');
-      await userEvent.click(searchButton);
-      expect(localStorage.getItem('search')).toBe('  rick  ');
+      await userEvent.click(searchButton, { delay: null });
+      expect(localStorage.getItem('search')).toBe('rick');
     });
 
     it('Clears search input and localstorage when clear search button is clicked', async () => {
       render(<Header onSearchSubmit={submitFunction} />);
       const searchInput = screen.getByPlaceholderText('start typing...');
-      await userEvent.type(searchInput, 'rick');
+      await userEvent.type(searchInput, 'rick', { delay: null });
       const searchButton = screen.getByText('Search');
-      await userEvent.click(searchButton);
+      await userEvent.click(searchButton, { delay: null });
 
       expect(searchInput).toHaveValue('rick');
       expect(localStorage.getItem('search')).toBe('rick');
 
       const clearButton = screen.getByText('✕');
-      await userEvent.click(clearButton);
+      await userEvent.click(clearButton, { delay: null });
       expect(searchInput).toHaveValue('');
       expect(localStorage.getItem('search')).toBe('');
     });
@@ -76,9 +76,9 @@ describe('Header', () => {
     it('Triggers search callback with correct parameters', async () => {
       render(<Header onSearchSubmit={submitFunction} />);
       const searchInput = screen.getByPlaceholderText('start typing...');
-      await userEvent.type(searchInput, 'rick');
+      await userEvent.type(searchInput, 'rick', { delay: null });
       const searchButton = screen.getByText('Search');
-      await userEvent.click(searchButton);
+      await userEvent.click(searchButton, { delay: null });
       expect(submitFunction).toBeCalledTimes(1);
     });
   });
@@ -95,9 +95,9 @@ describe('Header', () => {
       render(<Header onSearchSubmit={submitFunction} />);
       const searchInput = screen.getByPlaceholderText('start typing...');
       expect(searchInput).toHaveValue('test');
-      await userEvent.type(searchInput, 'rick');
+      await userEvent.type(searchInput, 'rick', { delay: null });
       const searchButton = screen.getByText('Search');
-      await userEvent.click(searchButton);
+      await userEvent.click(searchButton, { delay: null });
       expect(localStorage.getItem('search')).toBe('testrick');
     });
   });
