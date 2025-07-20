@@ -10,8 +10,8 @@ export default class CharacterCard extends Component<CharacterCardProps> {
       <div className="flex flex-col gap-2 bg-blue-500 rounded-3xl p-6 w-48 h-64">
         <img
           src={characterInfo.image}
-          className=" rounded-3xl"
-          alt="Vite logo"
+          className="rounded-3xl"
+          alt="Character portrait"
         />
         <div className="text-lg text-white font-bold">{characterInfo.name}</div>
       </div>
