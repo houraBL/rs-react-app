@@ -1,50 +1,32 @@
 import { Component } from 'react';
+import type { CharacterInfo } from '../../types/character';
 
-type CharacterCardProps = { characterInfo: CharacterInfo };
+type CharacterCardProps = { characterInfo?: CharacterInfo };
 
-export interface CharacterInfo {
-  id: number;
-  name: string;
-  status: string;
-  species: string;
-  type: string;
-  gender: string;
-  origin: { name: string; url: string };
-  location: { name: string; url: string };
-  image: string;
-  episode: string[];
-  url: string;
-  created: string;
-}
-
-interface CharacterCardState {
-  characterInfo: CharacterInfo;
-  loading: boolean;
-  error: null | string;
-}
-export default class CharacterCard extends Component<
-  CharacterCardProps,
-  CharacterCardState
-> {
-  constructor(props: CharacterCardProps) {
-    super(props);
-    this.state = {
-      characterInfo: props.characterInfo,
-      loading: true,
-      error: null,
-    };
-  }
-
+export default class CharacterCard extends Component<CharacterCardProps> {
   render() {
+    const { characterInfo } = this.props;
+    if (!characterInfo) {
+      return (
+        <div className="flex items-center justify-center bg-blue-500 rounded-3xl p-6 w-48 h-64">
+          <div className="text-lg text-white font-bold">
+            Character information is missing
+          </div>
+        </div>
+      );
+    }
     return (
-      <div className="flex flex-col gap-2 bg-blue-500 rounded-3xl p-6 w-48 h-64">
+      <div
+        className="flex flex-col gap-2 bg-blue-500 rounded-3xl p-6 w-48 h-64"
+        data-testid="character-card"
+      >
         <img
-          src={this.state.characterInfo.image}
-          className=" rounded-3xl"
-          alt="Vite logo"
+          src={characterInfo?.image}
+          className="rounded-3xl"
+          alt="Character portrait"
         />
         <div className="text-lg text-white font-bold">
-          {this.state.characterInfo.name}
+          {characterInfo?.name}
         </div>
       </div>
     );

@@ -1,14 +1,13 @@
 import { Component } from 'react';
-import CharacterCard, {
-  type CharacterInfo,
-} from '../CharacterCard/CharacterCard';
+import CharacterCard from '../CharacterCard/CharacterCard';
 import MainLoader from '../MainLoader/MainLoader';
 import { fetchCharacters } from '../../api/api-client';
+import type { CharacterInfo } from '../../types/character';
 
 type MainProps = { searchedTerm: string };
 
 interface MainState {
-  characters: CharacterInfo[];
+  characters: CharacterInfo[] | undefined;
   loading: boolean;
   error: null | string;
 }
@@ -47,6 +46,7 @@ export default class Main extends Component<MainProps, MainState> {
 
   render() {
     const { characters, loading, error } = this.state;
+
     if (loading)
       return (
         <main className="bg-blue-900 flex-grow flex items-center justify-center">
@@ -55,10 +55,22 @@ export default class Main extends Component<MainProps, MainState> {
       );
     if (error) {
       console.log('hello');
-      return <main className="bg-blue-900 flex-grow">Error: {error}</main>;
+      return (
+        <main className="bg-blue-900 flex-grow flex items-center justify-center text-white text-xl">
+          Error: {error}
+        </main>
+      );
     }
 
-    if (characters.length === 0) {
+    if (!characters) {
+      return (
+        <main className="bg-blue-900 flex-grow flex items-center justify-center text-white text-xl">
+          Cannot retrieve characters.
+        </main>
+      );
+    }
+
+    if (characters?.length === 0) {
       return (
         <main className="bg-blue-900 flex-grow flex items-center justify-center text-white text-xl">
           No characters found.
