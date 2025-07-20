@@ -3,7 +3,7 @@ import { Component } from 'react';
 export default class MainLoader extends Component {
   render() {
     return (
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-2" data-testid="main-loader">
         <div
           data-testid="bouncing-dot"
           className="w-4 h-4 rounded-full bg-blue-500 animate-bounce "
