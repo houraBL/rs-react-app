@@ -12,6 +12,10 @@ export async function fetchCharacters(searchTerm?: string) {
       throw new Error('Could not load your favorite characters');
     }
     const parsed = await request.json();
+
+    if (!parsed || !Array.isArray(parsed.results)) {
+      throw new Error('Cannot retrieve characters');
+    }
     return parsed.results;
   } catch (error: unknown) {
     const message =
