@@ -1,10 +1,14 @@
 import Main from './Main';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
 describe('Main', () => {
   vi.mock('../../api/api-client');
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   describe('Rendering Tests', () => {
     it('Renders correct number of items when data is provided', async () => {
       render(<Main searchedTerm="" />);
@@ -61,15 +65,39 @@ describe('Main', () => {
       ).toBeInTheDocument();
     });
   });
-  /*
+
   describe('Error Handling Tests', () => {
-    it('Displays error message when API call fails', () => {
+    it('Displays error message when API call fails', async () => {
+      const { fetchCharacters } = await import('../../api/api-client');
+      const mockedFetchCharacters = vi.mocked(fetchCharacters);
+
+      mockedFetchCharacters.mockRejectedValueOnce(new Error('Failed to fetch'));
       render(<Main searchedTerm="" />);
+      const errorMessage = await screen.findByText('Error: Failed to fetch');
+      expect(errorMessage).toBeInTheDocument();
     });
 
-    it('Shows appropriate error for different HTTP status codes (4xx, 5xx)', () => {
-      render(<Main searchedTerm="" />);
+    it('Displays error message when API call fails', async () => {
+      const { fetchCharacters } = await import('../../api/api-client');
+      const mockedFetchCharacters = vi.mocked(fetchCharacters);
+
+      mockedFetchCharacters.mockResolvedValueOnce([]);
+      const { rerender } = render(<Main searchedTerm="rick" />);
+      expect(mockedFetchCharacters).toBeCalledTimes(1);
+      rerender(<Main searchedTerm="morty" />);
+      expect(mockedFetchCharacters).toBeCalledTimes(2);
+    });
+
+    it('Displays unknown error message when non-error was thrown', async () => {
+      const { fetchCharacters } = await import('../../api/api-client');
+      const mockedFetchCharacters = vi.mocked(fetchCharacters);
+
+      mockedFetchCharacters.mockRejectedValueOnce('123');
+      render(<Main searchedTerm="rick" />);
+      const errorMessage = await screen.findByText(
+        'Error: Unknown error occurred'
+      );
+      expect(errorMessage).toBeInTheDocument();
     });
   });
-  */
 });
