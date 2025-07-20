@@ -16,7 +16,10 @@ export default class CharacterCard extends Component<CharacterCardProps> {
       );
     }
     return (
-      <div className="flex flex-col gap-2 bg-blue-500 rounded-3xl p-6 w-48 h-64">
+      <div
+        className="flex flex-col gap-2 bg-blue-500 rounded-3xl p-6 w-48 h-64"
+        data-testid="character-card"
+      >
         <img
           src={characterInfo?.image}
           className="rounded-3xl"
