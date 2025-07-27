@@ -1,6 +1,7 @@
 import Search from '../../components/Search/Search';
 import CharacterList from '../../components/CharacterList/CharacterList';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { Outlet } from 'react-router-dom';
 
 export default function HomePage() {
   const [localSearchTerm, setLocalSearchTerm] = useLocalStorage('search', '');
@@ -11,7 +12,10 @@ export default function HomePage() {
         onSearchSubmit={setLocalSearchTerm}
         searchQuery={localSearchTerm}
       />
-      <CharacterList searchedTerm={localSearchTerm} />
+      <div className="flex flex-grow">
+        <CharacterList searchedTerm={localSearchTerm} />
+        <Outlet />
+      </div>
     </div>
   );
 }

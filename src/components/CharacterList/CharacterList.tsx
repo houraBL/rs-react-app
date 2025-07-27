@@ -3,7 +3,7 @@ import MainLoader from '../MainLoader/MainLoader';
 import { fetchCharacters } from '../../api/api-client';
 import type { CharacterInfo } from '../../types/character';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Pagination from '../Pagination/Pagination';
 
 type CharacterListProps = {
@@ -13,10 +13,12 @@ export default function CharacterList({ searchedTerm }: CharacterListProps) {
   const [characters, setCharacters] = useState<CharacterInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
   const [totalPages, setTotalPages] = useState(1);
+  const { page: pageParam } = useParams();
+  const navigate = useNavigate();
 
-  const page = Number(searchParams.get('page') ?? '1');
+  const page = Number(pageParam ?? '1');
 
   useEffect(() => {
     let isCancelled = false;
@@ -54,7 +56,8 @@ export default function CharacterList({ searchedTerm }: CharacterListProps) {
   }, [page, searchedTerm]);
 
   const handlePageChange = (newPage: number) => {
-    setSearchParams({ name: searchedTerm, page: String(newPage) });
+    navigate(`/${newPage}`);
+    setSearchParams({ name: searchedTerm });
   };
 
   const containerClassName =

@@ -1,5 +1,5 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 type SearchProps = {
   onSearchSubmit: (searchTerm: string) => void;
@@ -9,12 +9,13 @@ type SearchProps = {
 export default function Search({ onSearchSubmit, searchQuery }: SearchProps) {
   const [inputValue, setInputValue] = useState(searchQuery);
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const urlSearch = searchParams.get('name');
   useEffect(() => {
     if (!urlSearch) {
       if (searchQuery && searchQuery !== '') {
-        setSearchParams({ name: searchQuery, page: '1' });
+        setSearchParams({ name: searchQuery });
       } else if (searchQuery === '') {
         setInputValue(searchQuery);
       }
@@ -30,6 +31,7 @@ export default function Search({ onSearchSubmit, searchQuery }: SearchProps) {
   const submitSearch = (term: string) => {
     const trimmed = term.trim();
     setSearchParams({});
+    navigate(`/1`);
     setInputValue(trimmed);
     onSearchSubmit(trimmed);
   };

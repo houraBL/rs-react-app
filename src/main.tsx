@@ -8,6 +8,7 @@ import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary.tsx';
 import HomePage from './pages/HomePage/HomePage.tsx';
 import AboutPage from './pages/AboutPage/AboutPage.tsx';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage.tsx';
+import DetailsPanel from './components/DetailsPanel/DetailsPanel.tsx';
 
 const router = createBrowserRouter([
   {
@@ -15,8 +16,18 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        index: true,
+        path: ':page?',
         element: <HomePage />,
+        children: [
+          {
+            index: true,
+            element: null,
+          },
+          {
+            path: ':detailsId',
+            element: <DetailsPanel />,
+          },
+        ],
       },
       {
         path: 'about',

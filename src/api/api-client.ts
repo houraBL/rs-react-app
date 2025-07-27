@@ -1,5 +1,6 @@
 export async function fetchCharacters(searchTerm?: string, page = 1) {
   try {
+    await new Promise((resolve) => setTimeout(resolve, 500));
     const params = new URLSearchParams();
     if (searchTerm?.trim()) {
       params.set('name', searchTerm.trim());
