@@ -2,10 +2,10 @@ import { NavLink } from 'react-router-dom';
 
 export default function Header() {
   const navLinkClassName =
-    'px-2 text-lg text-white font-bold hover:cursor-pointer';
+    'px-2 text-lg text-white font-bold hover:cursor-pointer inline-flex rounded-full px-3 py-1.5 ' +
+    ' hover:text-blue-200 hover:bg-blue-600 ';
 
   const isLinkActive =
-    'inline-flex rounded-full px-3 py-1.5 hover:text-blue-200 hover:bg-blue-600 ' +
     ' [&.active]:bg-blue-100 [&.active]:text-blue-600 [&.active]:cursor-default';
 
   return (
