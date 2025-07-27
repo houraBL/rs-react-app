@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import App from './App';
-import type { ReactNode } from 'react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 
@@ -13,16 +12,24 @@ describe('App Component', () => {
   vi.mock('./components/Header/Header', () => ({
     default: ({
       onSearchSubmit,
+      searchQuery,
     }: {
       onSearchSubmit: (searchTerm: string) => void;
+      searchQuery: string;
     }) => (
-      <button data-testid="mock-header" onClick={() => onSearchSubmit('mock')}>
-        Submit
-      </button>
+      <div>
+        search tearm: {searchQuery}
+        <button
+          data-testid="mock-header"
+          onClick={() => onSearchSubmit('mock')}
+        >
+          Submit
+        </button>
+      </div>
     ),
   }));
 
-  vi.mock('./components/Main/Main', () => ({
+  vi.mock('./components/CharacterList/CharacterList', () => ({
     default: ({ searchedTerm }: { searchedTerm: string }) => (
       <div data-testid="mock-main">{searchedTerm}</div>
     ),
@@ -32,24 +39,12 @@ describe('App Component', () => {
     default: () => <div data-testid="mock-footer" />,
   }));
 
-  vi.mock('./components/ErrorButton/ErrorButton', () => ({
-    default: () => <div data-testid="mock-error-button" />,
-  }));
-
-  vi.mock('./components/ErrorBoundary/ErrorBoundary', () => ({
-    default: ({ children }: { children: ReactNode }) => (
-      <div data-testid="mock-boundary">{children}</div>
-    ),
-  }));
-
   describe('Rendering Tests', () => {
     it('Renders all blocks', async () => {
       render(<App />);
       expect(screen.getByTestId('mock-header')).toBeInTheDocument();
       expect(screen.getByTestId('mock-main')).toBeInTheDocument();
       expect(screen.getByTestId('mock-footer')).toBeInTheDocument();
-      expect(screen.getByTestId('mock-error-button')).toBeInTheDocument();
-      expect(screen.getByTestId('mock-boundary')).toBeInTheDocument();
     });
   });
 

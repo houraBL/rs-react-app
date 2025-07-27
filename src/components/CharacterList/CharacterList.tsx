@@ -4,16 +4,19 @@ import MainLoader from '../MainLoader/MainLoader';
 import { fetchCharacters } from '../../api/api-client';
 import type { CharacterInfo } from '../../types/character';
 
-type MainProps = { searchedTerm: string };
+type CharacterListProps = { searchedTerm: string };
 
-interface MainState {
+interface CharacterListState {
   characters: CharacterInfo[] | undefined;
   loading: boolean;
   error: null | string;
 }
 
-export default class Main extends Component<MainProps, MainState> {
-  constructor(props: MainProps) {
+export default class CharacterList extends Component<
+  CharacterListProps,
+  CharacterListState
+> {
+  constructor(props: CharacterListProps) {
     super(props);
     this.state = {
       characters: [],
@@ -26,7 +29,7 @@ export default class Main extends Component<MainProps, MainState> {
     this.loadCharacters(this.props.searchedTerm);
   }
 
-  componentDidUpdate(prevProps: MainProps) {
+  componentDidUpdate(prevProps: CharacterListProps) {
     if (prevProps.searchedTerm !== this.props.searchedTerm) {
       this.loadCharacters(this.props.searchedTerm);
     }
@@ -54,7 +57,6 @@ export default class Main extends Component<MainProps, MainState> {
         </main>
       );
     if (error) {
-      console.log('hello');
       return (
         <main className="bg-blue-900 flex-grow flex items-center justify-center text-white text-xl">
           Error: {error}
