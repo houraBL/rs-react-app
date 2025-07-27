@@ -3,15 +3,20 @@ import MainLoader from '../MainLoader/MainLoader';
 import { fetchCharacters } from '../../api/api-client';
 import type { CharacterInfo } from '../../types/character';
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import Pagination from '../Pagination/Pagination';
 
-export default function CharacterList({
-  searchedTerm,
-}: {
+type CharacterListProps = {
   searchedTerm: string;
-}) {
+};
+export default function CharacterList({ searchedTerm }: CharacterListProps) {
   const [characters, setCharacters] = useState<CharacterInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [totalPages, setTotalPages] = useState(1);
+
+  const page = Number(searchParams.get('page') ?? '1');
 
   useEffect(() => {
     let isCancelled = false;
@@ -20,9 +25,13 @@ export default function CharacterList({
       setLoading(true);
       setError(null);
       try {
-        const data = await fetchCharacters(searchedTerm);
+        const { results, totalPages } = await fetchCharacters(
+          searchedTerm,
+          page
+        );
         if (!isCancelled) {
-          setCharacters(data);
+          setCharacters(results);
+          setTotalPages(totalPages);
         }
       } catch (err: unknown) {
         if (!isCancelled) {
@@ -42,10 +51,14 @@ export default function CharacterList({
     return () => {
       isCancelled = true;
     };
-  }, [searchedTerm]);
+  }, [page, searchedTerm]);
+
+  const handlePageChange = (newPage: number) => {
+    setSearchParams({ name: searchedTerm, page: String(newPage) });
+  };
 
   const containerClassName =
-    'bg-blue-900 flex-grow flex items-center justify-center text-white text-xl';
+    'bg-blue-900 flex-grow flex flex-col items-center justify-center text-white text-xl';
 
   if (loading)
     return (
@@ -76,6 +89,11 @@ export default function CharacterList({
             />
           ))}
       </div>
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }
