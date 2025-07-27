@@ -1,8 +1,8 @@
 import './App.css';
-import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
-import Main from './components/CharacterList/CharacterList';
 import { Component } from 'react';
+import { Outlet } from 'react-router-dom';
+import Header from './components/Header/Header';
 
 type AppProps = object;
 interface AppState {
@@ -25,11 +25,10 @@ class App extends Component<AppProps, AppState> {
   render() {
     return (
       <div className="min-h-screen flex flex-col relative w-full">
-        <Header
-          onSearchSubmit={this.handleSearchChange}
-          searchQuery={this.state.searchQuery}
-        />
-        <Main searchedTerm={this.state.searchQuery} />
+        <Header />
+        <main className="bg-blue-900 flex-grow flex items-center justify-center text-white text-xl">
+          <Outlet />
+        </main>
         <Footer />
       </div>
     );

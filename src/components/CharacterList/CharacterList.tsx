@@ -49,41 +49,32 @@ export default class CharacterList extends Component<
 
   render() {
     const { characters, loading, error } = this.state;
-
+    const containerClassName =
+      'bg-blue-900 flex-grow flex items-center justify-center text-white text-xl';
     if (loading)
       return (
-        <main className="bg-blue-900 flex-grow flex items-center justify-center">
+        <div className="bg-blue-900 flex-grow flex items-center justify-center">
           <MainLoader />
-        </main>
+        </div>
       );
     if (error) {
-      return (
-        <main className="bg-blue-900 flex-grow flex items-center justify-center text-white text-xl">
-          Error: {error}
-        </main>
-      );
+      return <div className={containerClassName}>Error: {error}</div>;
     }
 
     if (!characters) {
       return (
-        <main className="bg-blue-900 flex-grow flex items-center justify-center text-white text-xl">
-          Cannot retrieve characters.
-        </main>
+        <div className={containerClassName}>Cannot retrieve characters.</div>
       );
     }
 
     if (characters?.length === 0) {
-      return (
-        <main className="bg-blue-900 flex-grow flex items-center justify-center text-white text-xl">
-          No characters found.
-        </main>
-      );
+      return <div className={containerClassName}>No characters found.</div>;
     }
 
     return (
-      <main className="bg-blue-900 flex-grow">
+      <div className={containerClassName}>
         <div
-          className="flex flex-wrap gap-6 py-4 items-center justify-center"
+          className="flex flex-wrap gap-6 p-2 py-4 items-center justify-center"
           aria-label="characters-cards-container"
         >
           {characters &&
@@ -94,7 +85,7 @@ export default class CharacterList extends Component<
               />
             ))}
         </div>
-      </main>
+      </div>
     );
   }
 }
