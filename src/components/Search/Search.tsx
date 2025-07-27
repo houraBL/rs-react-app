@@ -1,4 +1,5 @@
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 type SearchProps = {
   onSearchSubmit: (searchTerm: string) => void;
@@ -7,6 +8,20 @@ type SearchProps = {
 
 export default function Search({ onSearchSubmit, searchQuery }: SearchProps) {
   const [inputValue, setInputValue] = useState(searchQuery);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const urlSearch = searchParams.get('name');
+  useEffect(() => {
+    if (!urlSearch) {
+      if (searchQuery && searchQuery !== '') {
+        setSearchParams({ name: searchQuery, page: '1' });
+      } else if (searchQuery === '') {
+        setInputValue(searchQuery);
+      }
+    } else {
+      setInputValue(urlSearch);
+    }
+  }, [urlSearch, searchQuery, setSearchParams]);
 
   const handleSearchInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -14,7 +29,7 @@ export default function Search({ onSearchSubmit, searchQuery }: SearchProps) {
 
   const submitSearch = (term: string) => {
     const trimmed = term.trim();
-    localStorage.setItem('search', trimmed);
+    setSearchParams({});
     setInputValue(trimmed);
     onSearchSubmit(trimmed);
   };
