@@ -1,85 +1,74 @@
-import { Component, type ChangeEvent, type FormEvent } from 'react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 
 type SearchProps = {
   onSearchSubmit: (searchTerm: string) => void;
   searchQuery: string;
 };
-interface SearchState {
-  currentSearchInput: string;
-}
 
-export default class Search extends Component<SearchProps, SearchState> {
-  constructor(props: SearchProps) {
-    super(props);
-    this.state = {
-      currentSearchInput: this.props.searchQuery,
-    };
-    this.handleSearchInputChange = this.handleSearchInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleClear = this.handleClear.bind(this);
-  }
+export default function Search({ onSearchSubmit, searchQuery }: SearchProps) {
+  const [inputValue, setInputValue] = useState(searchQuery);
 
-  handleSearchInputChange(event: ChangeEvent<HTMLInputElement>) {
-    this.setState({ currentSearchInput: event.target.value });
-  }
+  const handleSearchInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
 
-  handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const trimmed = this.state.currentSearchInput.trim();
+  const submitSearch = (term: string) => {
+    const trimmed = term.trim();
     localStorage.setItem('search', trimmed);
-    this.setState({ currentSearchInput: trimmed });
-    this.props.onSearchSubmit(trimmed);
-  }
+    setInputValue(trimmed);
+    onSearchSubmit(trimmed);
+  };
 
-  handleClear() {
-    this.setState({ currentSearchInput: '' });
-    localStorage.setItem('search', '');
-    this.props.onSearchSubmit('');
-  }
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    submitSearch(inputValue);
+  };
 
-  render() {
-    return (
-      <div className="pt-2 bg-blue-900 ">
-        <form
-          onSubmit={this.handleSubmit}
-          className="flex flex-wrap gap-2 items-center justify-center"
-          role="search"
+  const handleClear = () => {
+    submitSearch('');
+  };
+
+  return (
+    <div className="pt-2 bg-blue-900 ">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-wrap gap-2 items-center justify-center"
+        role="search"
+      >
+        <label
+          htmlFor="search-input"
+          className="px-2 text-lg text-white font-bold hover:cursor-pointer"
         >
-          <label
-            htmlFor="search-input"
-            className="px-2 text-lg text-white font-bold hover:cursor-pointer"
-          >
-            Look up a character:
-          </label>
-          <div className="p-2 flex flex-wrap gap-2 items-center justify-center relative">
-            <input
-              id="search-input"
-              value={this.state.currentSearchInput}
-              onChange={this.handleSearchInputChange}
-              className="bg-blue-100 rounded-full h-10 outline-0 px-4 pr-10 text-lg text-blue-800 font-semibold w-3xs"
-              autoCorrect="off"
-              spellCheck="false"
-              placeholder="start typing..."
-            ></input>
-            <button
-              type="button"
-              onClick={this.handleClear}
-              className="w-8 h-8 flex items-center justify-center text-blue-400 text-2xl font-bold cursor-pointer rounded-full hover:bg-blue-200 transition absolute right-4"
-              aria-label="Clear search"
-            >
-              ✕
-            </button>
-          </div>
-
+          Look up a character:
+        </label>
+        <div className="p-2 flex flex-wrap gap-2 items-center justify-center relative">
+          <input
+            id="search-input"
+            value={inputValue}
+            onChange={handleSearchInputChange}
+            className="bg-blue-100 rounded-full h-10 outline-0 px-4 pr-10 text-lg text-blue-800 font-semibold w-3xs"
+            autoCorrect="off"
+            spellCheck="false"
+            placeholder="start typing..."
+          ></input>
           <button
-            type="submit"
-            aria-label="Process search"
-            className="px-4 rounded-full h-10 bg-blue-500 hover:cursor-pointer text-lg text-white font-bold"
+            type="button"
+            onClick={handleClear}
+            className="w-8 h-8 flex items-center justify-center text-blue-400 text-2xl font-bold cursor-pointer rounded-full hover:bg-blue-200 transition absolute right-4"
+            aria-label="Clear search"
           >
-            Search
+            ✕
           </button>
-        </form>
-      </div>
-    );
-  }
+        </div>
+
+        <button
+          type="submit"
+          aria-label="Process search"
+          className="px-4 rounded-full h-10 bg-blue-500 hover:cursor-pointer text-lg text-white font-bold"
+        >
+          Search
+        </button>
+      </form>
+    </div>
+  );
 }

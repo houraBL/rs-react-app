@@ -1,91 +1,81 @@
-import { Component } from 'react';
 import CharacterCard from '../CharacterCard/CharacterCard';
 import MainLoader from '../MainLoader/MainLoader';
 import { fetchCharacters } from '../../api/api-client';
 import type { CharacterInfo } from '../../types/character';
+import { useEffect, useState } from 'react';
 
-type CharacterListProps = { searchedTerm: string };
+export default function CharacterList({
+  searchedTerm,
+}: {
+  searchedTerm: string;
+}) {
+  const [characters, setCharacters] = useState<CharacterInfo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-interface CharacterListState {
-  characters: CharacterInfo[] | undefined;
-  loading: boolean;
-  error: null | string;
-}
+  useEffect(() => {
+    let isCancelled = false;
 
-export default class CharacterList extends Component<
-  CharacterListProps,
-  CharacterListState
-> {
-  constructor(props: CharacterListProps) {
-    super(props);
-    this.state = {
-      characters: [],
-      loading: true,
-      error: null,
+    const loadCharacters = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchCharacters(searchedTerm);
+        if (!isCancelled) {
+          setCharacters(data);
+        }
+      } catch (err: unknown) {
+        if (!isCancelled) {
+          const message =
+            err instanceof Error ? err.message : 'Unknown error occurred';
+          setError(message);
+        }
+      } finally {
+        if (!isCancelled) {
+          setLoading(false);
+        }
+      }
     };
-  }
 
-  componentDidMount() {
-    this.loadCharacters(this.props.searchedTerm);
-  }
+    loadCharacters();
 
-  componentDidUpdate(prevProps: CharacterListProps) {
-    if (prevProps.searchedTerm !== this.props.searchedTerm) {
-      this.loadCharacters(this.props.searchedTerm);
-    }
-  }
+    return () => {
+      isCancelled = true;
+    };
+  }, [searchedTerm]);
 
-  async loadCharacters(searchTerm: string) {
-    this.setState({ loading: true, error: null });
-    try {
-      const characters = await fetchCharacters(searchTerm);
-      this.setState({ characters, loading: false });
-    } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : 'Unknown error occurred';
-      this.setState({ error: message, loading: false });
-    }
-  }
+  const containerClassName =
+    'bg-blue-900 flex-grow flex items-center justify-center text-white text-xl';
 
-  render() {
-    const { characters, loading, error } = this.state;
-    const containerClassName =
-      'bg-blue-900 flex-grow flex items-center justify-center text-white text-xl';
-    if (loading)
-      return (
-        <div className="bg-blue-900 flex-grow flex items-center justify-center">
-          <MainLoader />
-        </div>
-      );
-    if (error) {
-      return <div className={containerClassName}>Error: {error}</div>;
-    }
-
-    if (!characters) {
-      return (
-        <div className={containerClassName}>Cannot retrieve characters.</div>
-      );
-    }
-
-    if (characters?.length === 0) {
-      return <div className={containerClassName}>No characters found.</div>;
-    }
-
+  if (loading)
     return (
-      <div className={containerClassName}>
-        <div
-          className="flex flex-wrap gap-6 p-2 py-4 items-center justify-center"
-          aria-label="characters-cards-container"
-        >
-          {characters &&
-            characters.map((characterInfo) => (
-              <CharacterCard
-                key={characterInfo.id}
-                characterInfo={characterInfo}
-              />
-            ))}
-        </div>
+      <div className="bg-blue-900 flex-grow flex items-center justify-center">
+        <MainLoader />
       </div>
     );
+
+  if (error) {
+    return <div className={containerClassName}>Error: {error}</div>;
   }
+
+  if (characters.length === 0) {
+    return <div className={containerClassName}>No characters found.</div>;
+  }
+
+  return (
+    <div className={containerClassName}>
+      <div
+        className="flex flex-wrap gap-6 p-2 py-4 items-center justify-center"
+        aria-label="characters-cards-container"
+      >
+        {characters &&
+          characters.map((characterInfo) => (
+            <CharacterCard
+              key={characterInfo.id}
+              characterInfo={characterInfo}
+            />
+          ))}
+      </div>
+    </div>
+  );
 }

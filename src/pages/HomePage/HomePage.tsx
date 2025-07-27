@@ -1,34 +1,14 @@
-import { Component } from 'react';
 import Search from '../../components/Search/Search';
 import CharacterList from '../../components/CharacterList/CharacterList';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 
-type HomePageProps = object;
-interface HomePageState {
-  searchQuery: string;
-}
+export default function HomePage() {
+  const [searchQuery, setSearchQuery] = useLocalStorage('search', '');
 
-export default class HomePage extends Component<HomePageProps, HomePageState> {
-  constructor(props: HomePageProps) {
-    super(props);
-    this.state = {
-      searchQuery: localStorage.getItem('search') ?? '',
-    };
-    this.handleSearchChange = this.handleSearchChange.bind(this);
-  }
-
-  handleSearchChange = (value: string) => {
-    this.setState({ searchQuery: value });
-  };
-
-  render() {
-    return (
-      <div className="h-full min-h-[400px] flex flex-col relative w-full">
-        <Search
-          onSearchSubmit={this.handleSearchChange}
-          searchQuery={this.state.searchQuery}
-        />
-        <CharacterList searchedTerm={this.state.searchQuery} />
-      </div>
-    );
-  }
+  return (
+    <div className="h-full min-h-[400px] flex flex-col relative w-full">
+      <Search onSearchSubmit={setSearchQuery} searchQuery={searchQuery} />
+      <CharacterList searchedTerm={searchQuery} />
+    </div>
+  );
 }
