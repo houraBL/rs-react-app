@@ -10,7 +10,7 @@ export default function AboutPage() {
       <h1 className="text-2xl font-bold">About</h1>
       <p className="text-xl p-4">
         This is the About page. <br />
-        This app was possible thanks to Rick and Morti API
+        This app was possible thanks to Rick and Morty API
       </p>
       <a
         href="https://rickandmortyapi.com/"
@@ -18,8 +18,8 @@ export default function AboutPage() {
         rel="noreferrer"
         className={linkClass}
       >
-        <img src={APILogo} className="h-6" alt="Rick and Morti API logo" />
-        Rick and Morti API
+        <img src={APILogo} className="h-6" alt="Rick and Morty API logo" />
+        Rick and Morty API
       </a>
       <a
         href="https://rs.school/"

@@ -2,6 +2,7 @@ import CharacterList from './CharacterList';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import { act, render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('CharacterList', () => {
   vi.mock('../../api/api-client');
@@ -11,8 +12,12 @@ describe('CharacterList', () => {
 
   describe('Rendering Tests', () => {
     it('Renders correct number of items when data is provided', async () => {
-      render(<CharacterList searchedTerm="" />);
-      const cards = await screen.findAllByTestId('character-card');
+      render(
+        <MemoryRouter>
+          <CharacterList searchedTerm="" />
+        </MemoryRouter>
+      );
+      const cards = await screen.findAllByRole('character-card');
       expect(cards).toHaveLength(3);
     });
 
@@ -21,9 +26,23 @@ describe('CharacterList', () => {
       const mockedFetchCharacters = vi.mocked(fetchCharacters);
 
       mockedFetchCharacters.mockImplementationOnce(
-        () => new Promise((resolve) => setTimeout(() => resolve([]), 0))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(
+              () =>
+                resolve({
+                  results: [],
+                  totalPages: 1,
+                }),
+              0
+            )
+          )
       );
-      render(<CharacterList searchedTerm="" />);
+      render(
+        <MemoryRouter>
+          <CharacterList searchedTerm="" />
+        </MemoryRouter>
+      );
       const emptyCharactersMessage = await screen.findByText(
         'No characters found.'
       );
@@ -35,16 +54,34 @@ describe('CharacterList', () => {
       const mockedFetchCharacters = vi.mocked(fetchCharacters);
 
       mockedFetchCharacters.mockImplementationOnce(
-        () => new Promise((resolve) => setTimeout(() => resolve([]), 300))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(
+              () =>
+                resolve({
+                  results: [],
+                  totalPages: 1,
+                }),
+              300
+            )
+          )
       );
-      render(<CharacterList searchedTerm="" />);
+      render(
+        <MemoryRouter>
+          <CharacterList searchedTerm="" />
+        </MemoryRouter>
+      );
       expect(screen.getByTestId('main-loader')).toBeInTheDocument();
     });
   });
 
   describe('Data Display Tests', () => {
     it('Correctly displays item names and descriptions', async () => {
-      render(<CharacterList searchedTerm="" />);
+      render(
+        <MemoryRouter>
+          <CharacterList searchedTerm="" />
+        </MemoryRouter>
+      );
       expect(await screen.findByText('Test Name 1')).toBeInTheDocument();
       expect(await screen.findByText('Test Name 2')).toBeInTheDocument();
       expect(await screen.findByText('Test Name 3')).toBeInTheDocument();
@@ -56,12 +93,21 @@ describe('CharacterList', () => {
 
       mockedFetchCharacters.mockImplementationOnce(
         () =>
-          new Promise((resolve) => setTimeout(() => resolve(undefined), 300))
+          new Promise((resolve) =>
+            setTimeout(
+              () => resolve({ results: undefined, totalPages: undefined }),
+              300
+            )
+          )
       );
-      render(<CharacterList searchedTerm="" />);
+      render(
+        <MemoryRouter>
+          <CharacterList searchedTerm="" />
+        </MemoryRouter>
+      );
 
       expect(
-        await screen.findByText('Cannot retrieve characters.')
+        await screen.findByText('Error: Cannot retrieve characters')
       ).toBeInTheDocument();
     });
   });
@@ -72,7 +118,11 @@ describe('CharacterList', () => {
       const mockedFetchCharacters = vi.mocked(fetchCharacters);
 
       mockedFetchCharacters.mockRejectedValueOnce(new Error('Failed to fetch'));
-      render(<CharacterList searchedTerm="" />);
+      render(
+        <MemoryRouter>
+          <CharacterList searchedTerm="" />
+        </MemoryRouter>
+      );
       const errorMessage = await screen.findByText('Error: Failed to fetch');
       expect(errorMessage).toBeInTheDocument();
     });
@@ -81,11 +131,22 @@ describe('CharacterList', () => {
       const { fetchCharacters } = await import('../../api/api-client');
       const mockedFetchCharacters = vi.mocked(fetchCharacters);
 
-      mockedFetchCharacters.mockResolvedValueOnce([]);
-      const { rerender } = render(<CharacterList searchedTerm="rick" />);
+      mockedFetchCharacters.mockResolvedValueOnce({
+        results: [],
+        totalPages: 1,
+      });
+      const { rerender } = render(
+        <MemoryRouter>
+          <CharacterList searchedTerm="rick" />
+        </MemoryRouter>
+      );
       expect(mockedFetchCharacters).toBeCalledTimes(1);
       await act(async () => {
-        await rerender(<CharacterList searchedTerm="morty" />);
+        await rerender(
+          <MemoryRouter>
+            <CharacterList searchedTerm="morty" />
+          </MemoryRouter>
+        );
       });
       expect(mockedFetchCharacters).toBeCalledTimes(2);
     });
@@ -95,7 +156,11 @@ describe('CharacterList', () => {
       const mockedFetchCharacters = vi.mocked(fetchCharacters);
 
       mockedFetchCharacters.mockRejectedValueOnce('123');
-      render(<CharacterList searchedTerm="rick" />);
+      render(
+        <MemoryRouter>
+          <CharacterList searchedTerm="rick" />
+        </MemoryRouter>
+      );
       const errorMessage = await screen.findByText(
         'Error: Unknown error occurred'
       );

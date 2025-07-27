@@ -2,8 +2,8 @@ import ErrorBoundary from './ErrorBoundary';
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
-import ErrorButton from '../ErrorButton/ErrorButton';
 import userEvent from '@testing-library/user-event';
+import ErrorButton from '../ErrorButton/ErrorButton';
 
 describe('Error Boundary', () => {
   let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
@@ -24,7 +24,11 @@ describe('Error Boundary', () => {
         </ErrorBoundary>
       );
       await userEvent.click(screen.getByText('Create error'), { delay: null });
-      expect(screen.getByText('Something went wrong!')).toBeInTheDocument();
+      expect(
+        await screen.findByText('Something went wrong!')
+      ).toBeInTheDocument();
+      expect(await screen.findByText('Manual Error!')).toBeInTheDocument();
+      expect(await screen.queryByText('Create error')).not.toBeInTheDocument();
     });
 
     it('Displays fallback UI when error occurs', async () => {

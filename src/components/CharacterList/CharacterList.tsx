@@ -31,6 +31,15 @@ export default function CharacterList({ searchedTerm }: CharacterListProps) {
           searchedTerm,
           page
         );
+
+        if (
+          !results ||
+          !Array.isArray(results) ||
+          typeof totalPages !== 'number'
+        ) {
+          throw new Error('Cannot retrieve characters');
+        }
+
         if (!isCancelled) {
           setCharacters(results);
           setTotalPages(totalPages);
