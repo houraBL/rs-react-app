@@ -7,6 +7,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary.tsx';
 import HomePage from './pages/HomePage/HomePage.tsx';
 import AboutPage from './pages/AboutPage/AboutPage.tsx';
+import NotFoundPage from './pages/NotFoundPage/NotFoundPage.tsx';
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: 'about',
         element: <AboutPage />,
+      },
+      {
+        path: '*',
+        element: <NotFoundPage />,
       },
     ],
   },
