@@ -6,7 +6,9 @@ export async function fetchCharacterDetails(characterID: string) {
     );
 
     if (!response.ok) {
-      if (response.status === 404) return { result: null };
+      if (response.status === 404) {
+        return { result: null };
+      }
       if (response.status === 500)
         throw new Error('Could not load your favorite character');
       throw new Error('Could not load your favorite character');

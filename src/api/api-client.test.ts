@@ -47,24 +47,32 @@ describe('API Integration Tests', () => {
     });
   });
 
-  it('Returns empty array when status is 404', async () => {
+  it('Throws Error when no characters found', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: false,
       status: 404,
     });
     globalThis.fetch = mockFetch;
 
-    const result = await fetchCharacters();
-    expect(result).toEqual({
-      results: [],
-      totalPages: 0,
-    });
+    await expect(fetchCharacters()).rejects.toThrow('No characters found');
   });
 
   it('Handles API error responses', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: false,
       status: 500,
+    });
+    globalThis.fetch = mockFetch;
+
+    await expect(fetchCharacters()).rejects.toThrow(
+      'Could not load your favorite characters'
+    );
+  });
+
+  it('Handles API unknown error responses', async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 600,
     });
     globalThis.fetch = mockFetch;
 

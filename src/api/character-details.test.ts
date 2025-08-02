@@ -57,6 +57,18 @@ describe('Character Details API Integration Tests', () => {
     );
   });
 
+  it('Handles API unknown error responses', async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 600,
+    });
+    globalThis.fetch = mockFetch;
+
+    await expect(fetchCharacterDetails('1')).rejects.toThrow(
+      'Could not load your favorite character'
+    );
+  });
+
   it('Handles API response if returned value is nullable', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,

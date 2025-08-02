@@ -16,13 +16,13 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: ':page?',
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: ':pageId',
         element: <HomePage />,
         children: [
-          {
-            index: true,
-            element: null,
-          },
           {
             path: ':detailsId',
             element: <DetailsPanel />,
@@ -32,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: 'about',
         element: <AboutPage />,
+      },
+      {
+        path: '/not-found',
+        element: <NotFoundPage />,
       },
       {
         path: '*',

@@ -5,7 +5,7 @@ import { fetchCharacterDetails } from '../../api/character-details';
 import MainLoader from '../MainLoader/MainLoader';
 
 export default function DetailsPanel() {
-  const { detailsId, page } = useParams();
+  const { detailsId, pageId } = useParams();
   const [character, setCharacter] = useState<CharacterInfo | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,9 +54,13 @@ export default function DetailsPanel() {
         panelRef.current && !panelRef.current.contains(target);
 
       const clickedCard = target.closest('[role="character-card"]');
+      const clickedPagination = target.closest('[data-role="pagination"]');
+      if (clickedPagination) {
+        return;
+      }
 
       if (clickedOutsidePanel && !clickedCard) {
-        navigate(`/${page ?? ''}`, { replace: true });
+        navigate(`/${pageId ?? ''}`, { replace: true });
       }
     };
 
@@ -64,29 +68,22 @@ export default function DetailsPanel() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [navigate, page]);
+  }, [navigate, pageId]);
 
   const detailsClassName =
-    'm-4 p-4 px-6 w-full h-fit bg-blue-500 rounded-3xl flex flex-col gap-2';
+    'relative sticky top-20 my-4 mx-2 sm:mx-6 p-4 px-4 sm:px-6 h-fit bg-blue-500 rounded-3xl flex flex-col gap-2 min-w-40 w-60 sm:min-w-60';
 
   if (!detailsId) return null;
   if (loading)
     return (
       <div
-        className={
-          detailsClassName + ' flex-grow flex items-center justify-center'
-        }
+        className={detailsClassName + ' items-center justify-center'}
         ref={panelRef}
       >
         <MainLoader color="bg-white" />
       </div>
     );
-  if (!character)
-    return (
-      <div className={detailsClassName} ref={panelRef}>
-        Character not found
-      </div>
-    );
+
   if (error) {
     return (
       <div className={detailsClassName} ref={panelRef}>
@@ -94,18 +91,34 @@ export default function DetailsPanel() {
       </div>
     );
   }
+
+  if (!character)
+    return (
+      <div className={detailsClassName} ref={panelRef}>
+        Character not found
+      </div>
+    );
+
   return (
     <div className={detailsClassName} ref={panelRef}>
-      <h2 className="text-xl font-bold">{character.name}</h2>
+      <button
+        type="button"
+        onClick={() => navigate(`/${pageId ?? ''}`, { replace: true })}
+        className="w-6 h-6 flex items-center justify-center text-blue-400 text-xl font-bold cursor-pointer rounded-full bg-blue-100 hover:bg-blue-200 transition absolute -right-1.5 -top-1.5"
+        aria-label="Close details"
+      >
+        ✕
+      </button>
+      <h2 className="text-sm sm:text-xl font-bold">{character.name}</h2>
       <img
         src={character?.image}
         className="rounded-3xl"
         alt={character?.name}
       />
-      <p>Status: {character.status}</p>
-      <p>Species: {character.species}</p>
-      <p>Gender: {character.gender}</p>
-      <p>Origin: {character.origin?.name}</p>
+      <p className="text-sm sm:text-lg">Status: {character.status}</p>
+      <p className="text-sm sm:text-lg">Species: {character.species}</p>
+      <p className="text-sm sm:text-lg">Gender: {character.gender}</p>
+      <p className="text-sm sm:text-lg">Origin: {character.origin?.name}</p>
     </div>
   );
 }

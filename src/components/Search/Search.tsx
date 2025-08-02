@@ -1,4 +1,9 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
+import {
+  useLayoutEffect,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+} from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 type SearchProps = {
@@ -12,7 +17,7 @@ export default function Search({ onSearchSubmit, searchQuery }: SearchProps) {
   const navigate = useNavigate();
 
   const urlSearch = searchParams.get('name');
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!urlSearch) {
       if (searchQuery && searchQuery !== '') {
         setSearchParams({ name: searchQuery });

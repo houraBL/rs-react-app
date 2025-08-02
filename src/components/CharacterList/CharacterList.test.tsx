@@ -1,20 +1,37 @@
 import CharacterList from './CharacterList';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import '@testing-library/jest-dom';
 import { act, render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
+
+vi.mock('react-router-dom', async () => {
+  const actual =
+    await vi.importActual<typeof import('react-router-dom')>(
+      'react-router-dom'
+    );
+  return {
+    ...actual,
+    useSearchParams: vi.fn(),
+    useNavigate: vi.fn(),
+  };
+});
 
 describe('CharacterList', () => {
   vi.mock('../../api/api-client');
+
+  const mockNavigate = vi.fn();
+
   beforeEach(() => {
     vi.clearAllMocks();
+    (useNavigate as Mock).mockReturnValue(mockNavigate);
   });
+  const setTotalPages = vi.fn();
 
   describe('Rendering Tests', () => {
     it('Renders correct number of items when data is provided', async () => {
       render(
         <MemoryRouter>
-          <CharacterList searchedTerm="" />
+          <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
         </MemoryRouter>
       );
       const cards = await screen.findAllByRole('character-card');
@@ -24,7 +41,6 @@ describe('CharacterList', () => {
     it('Displays "no results" message when data array is empty', async () => {
       const { fetchCharacters } = await import('../../api/api-client');
       const mockedFetchCharacters = vi.mocked(fetchCharacters);
-
       mockedFetchCharacters.mockImplementationOnce(
         () =>
           new Promise((resolve) =>
@@ -40,13 +56,13 @@ describe('CharacterList', () => {
       );
       render(
         <MemoryRouter>
-          <CharacterList searchedTerm="" />
+          <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
         </MemoryRouter>
       );
-      const emptyCharactersMessage = await screen.findByText(
-        'No characters found.'
+      const errorMessage = await screen.findByText(
+        'Error: No characters found'
       );
-      expect(emptyCharactersMessage).toBeInTheDocument();
+      expect(errorMessage).toBeInTheDocument();
     });
 
     it('Shows loading state while fetching data', async () => {
@@ -68,7 +84,7 @@ describe('CharacterList', () => {
       );
       render(
         <MemoryRouter>
-          <CharacterList searchedTerm="" />
+          <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
         </MemoryRouter>
       );
       expect(screen.getByTestId('main-loader')).toBeInTheDocument();
@@ -79,36 +95,12 @@ describe('CharacterList', () => {
     it('Correctly displays item names and descriptions', async () => {
       render(
         <MemoryRouter>
-          <CharacterList searchedTerm="" />
+          <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
         </MemoryRouter>
       );
       expect(await screen.findByText('Test Name 1')).toBeInTheDocument();
       expect(await screen.findByText('Test Name 2')).toBeInTheDocument();
       expect(await screen.findByText('Test Name 3')).toBeInTheDocument();
-    });
-
-    it('Handles missing or undefined data gracefully', async () => {
-      const { fetchCharacters } = await import('../../api/api-client');
-      const mockedFetchCharacters = vi.mocked(fetchCharacters);
-
-      mockedFetchCharacters.mockImplementationOnce(
-        () =>
-          new Promise((resolve) =>
-            setTimeout(
-              () => resolve({ results: undefined, totalPages: undefined }),
-              300
-            )
-          )
-      );
-      render(
-        <MemoryRouter>
-          <CharacterList searchedTerm="" />
-        </MemoryRouter>
-      );
-
-      expect(
-        await screen.findByText('Error: Cannot retrieve characters')
-      ).toBeInTheDocument();
     });
   });
 
@@ -120,7 +112,7 @@ describe('CharacterList', () => {
       mockedFetchCharacters.mockRejectedValueOnce(new Error('Failed to fetch'));
       render(
         <MemoryRouter>
-          <CharacterList searchedTerm="" />
+          <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
         </MemoryRouter>
       );
       const errorMessage = await screen.findByText('Error: Failed to fetch');
@@ -137,14 +129,14 @@ describe('CharacterList', () => {
       });
       const { rerender } = render(
         <MemoryRouter>
-          <CharacterList searchedTerm="rick" />
+          <CharacterList searchedTerm="rick" setTotalPages={setTotalPages} />
         </MemoryRouter>
       );
       expect(mockedFetchCharacters).toBeCalledTimes(1);
       await act(async () => {
         await rerender(
           <MemoryRouter>
-            <CharacterList searchedTerm="morty" />
+            <CharacterList searchedTerm="morty" setTotalPages={setTotalPages} />
           </MemoryRouter>
         );
       });
@@ -158,13 +150,31 @@ describe('CharacterList', () => {
       mockedFetchCharacters.mockRejectedValueOnce('123');
       render(
         <MemoryRouter>
-          <CharacterList searchedTerm="rick" />
+          <CharacterList searchedTerm="rick" setTotalPages={setTotalPages} />
         </MemoryRouter>
       );
       const errorMessage = await screen.findByText(
         'Error: Unknown error occurred'
       );
       expect(errorMessage).toBeInTheDocument();
+    });
+
+    it('Redirects to not-found page is pageId is invalid', async () => {
+      render(
+        <MemoryRouter initialEntries={['/abc']}>
+          <Routes>
+            <Route
+              path="/:pageId"
+              element={
+                <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
+              }
+            />
+          </Routes>
+        </MemoryRouter>
+      );
+      await expect(mockNavigate).toHaveBeenCalledWith('/not-found', {
+        replace: true,
+      });
     });
   });
 });

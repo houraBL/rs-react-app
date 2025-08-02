@@ -3,22 +3,23 @@ import MainLoader from '../MainLoader/MainLoader';
 import { fetchCharacters } from '../../api/api-client';
 import type { CharacterInfo } from '../../types/character';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import Pagination from '../Pagination/Pagination';
+import { useNavigate, useParams } from 'react-router-dom';
 
 type CharacterListProps = {
   searchedTerm: string;
+  setTotalPages: (n: number) => void;
 };
-export default function CharacterList({ searchedTerm }: CharacterListProps) {
+export default function CharacterList({
+  searchedTerm,
+  setTotalPages,
+}: CharacterListProps) {
   const [characters, setCharacters] = useState<CharacterInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [, setSearchParams] = useSearchParams();
-  const [totalPages, setTotalPages] = useState(1);
-  const { page: pageParam } = useParams();
+  const { pageId } = useParams();
   const navigate = useNavigate();
 
-  const page = Number(pageParam ?? '1');
+  const page = Number(pageId ?? '1');
 
   useEffect(() => {
     let isCancelled = false;
@@ -27,18 +28,14 @@ export default function CharacterList({ searchedTerm }: CharacterListProps) {
       setLoading(true);
       setError(null);
       try {
+        if (Number.isNaN(page) || typeof page !== 'number') {
+          navigate('/not-found', { replace: true });
+          return;
+        }
         const { results, totalPages } = await fetchCharacters(
           searchedTerm,
           page
         );
-
-        if (
-          !results ||
-          !Array.isArray(results) ||
-          typeof totalPages !== 'number'
-        ) {
-          throw new Error('Cannot retrieve characters');
-        }
 
         if (!isCancelled) {
           setCharacters(results);
@@ -62,15 +59,10 @@ export default function CharacterList({ searchedTerm }: CharacterListProps) {
     return () => {
       isCancelled = true;
     };
-  }, [page, searchedTerm]);
-
-  const handlePageChange = (newPage: number) => {
-    navigate(`/${newPage}`);
-    setSearchParams({ name: searchedTerm });
-  };
+  }, [navigate, page, searchedTerm, setTotalPages]);
 
   const containerClassName =
-    'bg-blue-900 flex-grow flex flex-col items-center justify-center text-white text-xl';
+    'flex flex-wrap flex-row gap-2 sm:gap-6 p-2 py-4 items-center justify-center mx-auto';
 
   if (loading)
     return (
@@ -84,28 +76,18 @@ export default function CharacterList({ searchedTerm }: CharacterListProps) {
   }
 
   if (characters.length === 0) {
-    return <div className={containerClassName}>No characters found.</div>;
+    return <div className={containerClassName}>Error: No characters found</div>;
   }
 
   return (
-    <div className={containerClassName}>
-      <div
-        className="flex flex-wrap gap-6 p-2 py-4 items-center justify-center"
-        aria-label="characters-cards-container"
-      >
-        {characters &&
-          characters.map((characterInfo) => (
-            <CharacterCard
-              key={characterInfo.id}
-              characterInfo={characterInfo}
-            />
-          ))}
-      </div>
-      <Pagination
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+    <div
+      className="flex flex-wrap flex-row gap-2 sm:gap-6 p-2 py-4 items-center justify-center "
+      aria-label="characters-cards-container"
+    >
+      {characters &&
+        characters.map((characterInfo) => (
+          <CharacterCard key={characterInfo.id} characterInfo={characterInfo} />
+        ))}
     </div>
   );
 }

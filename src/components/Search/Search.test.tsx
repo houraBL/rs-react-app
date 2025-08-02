@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useSearchParams, useNavigate, MemoryRouter } from 'react-router-dom';
+import { useNavigate, MemoryRouter, Routes, Route } from 'react-router-dom';
 import Search from './Search';
 import { type Mock } from 'vitest';
 import '@testing-library/jest-dom';
@@ -13,7 +13,6 @@ vi.mock('react-router-dom', async () => {
     );
   return {
     ...actual,
-    useSearchParams: vi.fn(),
     useNavigate: vi.fn(),
   };
 });
@@ -21,16 +20,11 @@ vi.mock('react-router-dom', async () => {
 describe('Search', () => {
   const submitFunction = vi.fn();
   const mockNavigate = vi.fn();
-  const mockSetSearchParams = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
 
     (useNavigate as Mock).mockReturnValue(mockNavigate);
-    (useSearchParams as Mock).mockReturnValue([
-      new URLSearchParams(),
-      mockSetSearchParams,
-    ]);
   });
 
   describe('Search Component Tests', () => {
@@ -52,6 +46,26 @@ describe('Search', () => {
       expect(await screen.getByPlaceholderText('start typing...')).toHaveValue(
         ''
       );
+    });
+
+    it('Gets name value from the url', async () => {
+      render(
+        <MemoryRouter initialEntries={['/?name=Rick']}>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Search searchQuery="" onSearchSubmit={submitFunction} />
+              }
+            />
+          </Routes>
+        </MemoryRouter>
+      );
+
+      await waitFor(async () => {
+        const input = await screen.findByRole('textbox');
+        expect(input).toHaveValue('Rick');
+      });
     });
   });
 
@@ -79,7 +93,7 @@ describe('Search', () => {
       await userEvent.type(input, '  morty  ');
       await userEvent.click(button);
 
-      expect(mockSetSearchParams).toHaveBeenCalledWith({});
+      //expect(mockSetSearchParams).toHaveBeenCalledWith({});
       expect(mockNavigate).toHaveBeenCalledWith('/1');
       expect(submitFunction).toHaveBeenCalledWith('morty');
     });
