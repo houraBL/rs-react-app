@@ -14,7 +14,12 @@ import { store } from './app/store.ts';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: (
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    ),
+
     children: [
       {
         index: true,
@@ -23,6 +28,7 @@ const router = createBrowserRouter([
       {
         path: ':pageId',
         element: <HomePage />,
+
         children: [
           {
             path: ':detailsId',

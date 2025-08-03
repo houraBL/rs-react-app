@@ -18,7 +18,7 @@ export default function CharacterCard({
   if (!characterInfo) {
     return (
       <div className="flex items-center justify-center bg-blue-500 rounded-3xl p-6 w-48 h-64">
-        <div className="text-lg text-white font-bold">
+        <div className="text-lg font-bold">
           Character information is missing
         </div>
       </div>
@@ -31,7 +31,7 @@ export default function CharacterCard({
 
   return (
     <div
-      className="relative flex flex-col gap-2 bg-blue-500 rounded-3xl w-32 h-48 sm:w-48 sm:h-64"
+      className="relative flex flex-col gap-2 bg-blue-100 dark:bg-blue-600 rounded-3xl w-32 h-48 sm:w-48 sm:h-64"
       data-testid="character-card"
       role="character-card"
     >
@@ -49,7 +49,7 @@ export default function CharacterCard({
             className="rounded-3xl w-24 h-24 mx-auto sm:w-32 sm:h-32"
             alt="Character portrait"
           />
-          <div className="text-xs text-white sm:font-bold sm:text-base overflow-hidden h-16 sm:h-full">
+          <div className="text-xs sm:font-bold sm:text-base overflow-hidden h-16 sm:h-full">
             {characterInfo?.name}
           </div>
         </div>

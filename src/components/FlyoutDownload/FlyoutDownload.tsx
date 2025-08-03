@@ -47,10 +47,10 @@ export default function FlyoutDownload() {
   if (!selectedItems.length) return null;
 
   const buttonClassName =
-    'px-4 py-2 rounded-3xl bg-blue-500 disabled:bg-blue-700 hover:bg-blue-600 hover:cursor-pointer disabled:cursor-default';
+    'px-4 py-2 rounded-3xl hover:cursor-pointer disabled:cursor-default disabled:bg-blue-200 text-blue-900 bg-blue-300 hover:bg-blue-500 dark:disabled:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white';
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-blue-900 text-white p-2 flex gap-4 sm:gap-8 items-center justify-center z-10 shadow-[0_-9px_9px_rgba(22,36,86,0.9)]">
+    <div className="fixed bottom-0 left-0 w-full bg-blue-400 dark:bg-blue-900 p-2 flex gap-4 sm:gap-8 items-center justify-center z-10 shadow-[0_-9px_9px_rgba(59,130,246,0.8)] dark:shadow-[0_-9px_9px_rgba(22,36,86,0.9)]">
       <span className="text-sm sm:text-base sm:font-bold">
         {selectedItems.length} item(s) selected
       </span>

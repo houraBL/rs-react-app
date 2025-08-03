@@ -66,7 +66,7 @@ export default function CharacterList({
 
   if (loading)
     return (
-      <div className="bg-blue-900 flex-grow flex items-center justify-center">
+      <div className="flex-grow flex items-center justify-center">
         <MainLoader />
       </div>
     );

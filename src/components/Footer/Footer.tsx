@@ -3,7 +3,7 @@ import githubLogo from '../../assets/github.svg';
 
 export default function Footer() {
   return (
-    <footer className="h-12 flex gap-4 items-center justify-center bg-blue-500 text-white font-bold">
+    <footer className="h-12 flex gap-4 items-center justify-center bg-blue-400 dark:bg-blue-600 font-bold">
       <a
         href="https://rs.school/"
         target="_blank"

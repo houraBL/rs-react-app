@@ -51,7 +51,7 @@ export default function Search({ onSearchSubmit, searchQuery }: SearchProps) {
   };
 
   return (
-    <div className="pt-2 bg-blue-900 ">
+    <div className="pt-2 ">
       <form
         onSubmit={handleSubmit}
         className="flex flex-wrap gap-2 items-center justify-center"
@@ -59,7 +59,7 @@ export default function Search({ onSearchSubmit, searchQuery }: SearchProps) {
       >
         <label
           htmlFor="search-input"
-          className="px-2 text-lg text-white font-bold hover:cursor-pointer"
+          className="px-2 text-lg font-bold hover:cursor-pointer"
         >
           Look up a character:
         </label>
@@ -68,7 +68,7 @@ export default function Search({ onSearchSubmit, searchQuery }: SearchProps) {
             id="search-input"
             value={inputValue}
             onChange={handleSearchInputChange}
-            className="bg-blue-100 rounded-full h-10 outline-0 px-4 pr-10 text-lg text-blue-800 font-semibold w-3xs"
+            className="bg-blue-100 dark:bg-blue-600 rounded-full h-10 outline-0 px-4 pr-10 text-lg text-blue-800 dark:text-white font-semibold w-3xs"
             autoCorrect="off"
             spellCheck="false"
             placeholder="start typing..."
@@ -76,7 +76,7 @@ export default function Search({ onSearchSubmit, searchQuery }: SearchProps) {
           <button
             type="button"
             onClick={handleClear}
-            className="w-8 h-8 flex items-center justify-center text-blue-400 text-2xl font-bold cursor-pointer rounded-full hover:bg-blue-200 transition absolute right-4"
+            className="w-8 h-8 flex items-center justify-center text-blue-600 dark:text-blue-400 text-2xl font-bold cursor-pointer rounded-full hover:bg-blue-200 dark:hover:bg-blue-500 absolute right-4"
             aria-label="Clear search"
           >
             ✕
@@ -86,7 +86,7 @@ export default function Search({ onSearchSubmit, searchQuery }: SearchProps) {
         <button
           type="submit"
           aria-label="Process search"
-          className="px-4 rounded-full h-10 bg-blue-500 hover:cursor-pointer text-lg text-white font-bold"
+          className="px-4 rounded-full h-10 hover:cursor-pointer text-lg font-bold text-blue-900 bg-blue-400 hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white"
         >
           Search
         </button>
