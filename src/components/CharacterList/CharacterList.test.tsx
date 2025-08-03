@@ -3,6 +3,10 @@ import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import '@testing-library/jest-dom';
 import { act, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { configureStore } from '@reduxjs/toolkit';
+import selectionReducer from '../../store/selectionSlice';
+import { Provider } from 'react-redux';
+import { mockCharacter } from '../../api/__mocks__/character-details';
 
 vi.mock('react-router-dom', async () => {
   const actual =
@@ -14,6 +18,17 @@ vi.mock('react-router-dom', async () => {
     useSearchParams: vi.fn(),
     useNavigate: vi.fn(),
   };
+});
+
+const store = configureStore({
+  reducer: { selection: selectionReducer },
+  preloadedState: {
+    selection: {
+      selectedItems: {
+        [mockCharacter.id]: mockCharacter,
+      },
+    },
+  },
 });
 
 describe('CharacterList', () => {
@@ -30,9 +45,11 @@ describe('CharacterList', () => {
   describe('Rendering Tests', () => {
     it('Renders correct number of items when data is provided', async () => {
       render(
-        <MemoryRouter>
-          <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
-        </MemoryRouter>
+        <Provider store={store}>
+          <MemoryRouter>
+            <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
+          </MemoryRouter>
+        </Provider>
       );
       const cards = await screen.findAllByRole('character-card');
       expect(cards).toHaveLength(3);
@@ -94,9 +111,11 @@ describe('CharacterList', () => {
   describe('Data Display Tests', () => {
     it('Correctly displays item names and descriptions', async () => {
       render(
-        <MemoryRouter>
-          <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
-        </MemoryRouter>
+        <Provider store={store}>
+          <MemoryRouter>
+            <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
+          </MemoryRouter>
+        </Provider>
       );
       expect(await screen.findByText('Test Name 1')).toBeInTheDocument();
       expect(await screen.findByText('Test Name 2')).toBeInTheDocument();
@@ -128,16 +147,23 @@ describe('CharacterList', () => {
         totalPages: 1,
       });
       const { rerender } = render(
-        <MemoryRouter>
-          <CharacterList searchedTerm="rick" setTotalPages={setTotalPages} />
-        </MemoryRouter>
+        <Provider store={store}>
+          <MemoryRouter>
+            <CharacterList searchedTerm="rick" setTotalPages={setTotalPages} />
+          </MemoryRouter>
+        </Provider>
       );
       expect(mockedFetchCharacters).toBeCalledTimes(1);
       await act(async () => {
         await rerender(
-          <MemoryRouter>
-            <CharacterList searchedTerm="morty" setTotalPages={setTotalPages} />
-          </MemoryRouter>
+          <Provider store={store}>
+            <MemoryRouter>
+              <CharacterList
+                searchedTerm="morty"
+                setTotalPages={setTotalPages}
+              />
+            </MemoryRouter>
+          </Provider>
         );
       });
       expect(mockedFetchCharacters).toBeCalledTimes(2);

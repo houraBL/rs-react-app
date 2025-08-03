@@ -1,6 +1,6 @@
 import Search from '../../components/Search/Search';
 import CharacterList from '../../components/CharacterList/CharacterList';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { useLocalStorage } from '../../hooks/useLocalStorage/useLocalStorage';
 import {
   Outlet,
   useNavigate,
@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Pagination from '../../components/Pagination/Pagination';
+import FlyoutDownload from '../../components/FlyoutDownload/FlyoutDownload';
 
 export default function HomePage() {
   const [localSearchTerm, setLocalSearchTerm] = useLocalStorage('search', '');
@@ -40,7 +41,7 @@ export default function HomePage() {
         onSearchSubmit={setLocalSearchTerm}
         searchQuery={localSearchTerm}
       />
-      <div className="flex flex-grow">
+      <div className="flex flex-grow justify-between">
         <CharacterList
           searchedTerm={localSearchTerm}
           setTotalPages={setTotalPages}
@@ -52,6 +53,7 @@ export default function HomePage() {
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
+      <FlyoutDownload />
     </div>
   );
 }

@@ -52,14 +52,14 @@ export default function DetailsPanel() {
 
       const clickedOutsidePanel =
         panelRef.current && !panelRef.current.contains(target);
-
       const clickedCard = target.closest('[role="character-card"]');
+      const clickedCheckbox = target.closest('[role="selection-checkbox"]');
       const clickedPagination = target.closest('[data-role="pagination"]');
       if (clickedPagination) {
         return;
       }
 
-      if (clickedOutsidePanel && !clickedCard) {
+      if ((clickedOutsidePanel && !clickedCard) || clickedCheckbox) {
         navigate(`/${pageId ?? ''}`, { replace: true });
       }
     };
@@ -71,7 +71,7 @@ export default function DetailsPanel() {
   }, [navigate, pageId]);
 
   const detailsClassName =
-    'relative sticky top-20 my-4 mx-2 sm:mx-6 p-4 px-4 sm:px-6 h-fit bg-blue-500 rounded-3xl flex flex-col gap-2 min-w-40 w-60 sm:min-w-60';
+    'relative sticky top-20 my-4 mx-2 sm:mx-6 p-4 px-4 sm:px-6 h-fit bg-blue-100 dark:bg-blue-600 rounded-3xl flex flex-col gap-2 min-w-40 w-60 sm:min-w-60';
 
   if (!detailsId) return null;
   if (loading)
@@ -80,7 +80,7 @@ export default function DetailsPanel() {
         className={detailsClassName + ' items-center justify-center'}
         ref={panelRef}
       >
-        <MainLoader color="bg-white" />
+        <MainLoader color="bg-blue-400 dark:bg-white" />
       </div>
     );
 
@@ -104,7 +104,10 @@ export default function DetailsPanel() {
       <button
         type="button"
         onClick={() => navigate(`/${pageId ?? ''}`, { replace: true })}
-        className="w-6 h-6 flex items-center justify-center text-blue-400 text-xl font-bold cursor-pointer rounded-full bg-blue-100 hover:bg-blue-200 transition absolute -right-1.5 -top-1.5"
+        className={
+          'w-6 h-6 flex items-center justify-center text-lg font-bold cursor-pointer rounded-full absolute -right-1.5 -top-1.5 ' +
+          'text-white bg-blue-400 hover:bg-blue-500 dark:text-blue-900 dark:bg-blue-400 dark:hover:bg-blue-500'
+        }
         aria-label="Close details"
       >
         ✕

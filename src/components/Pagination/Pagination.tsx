@@ -10,10 +10,10 @@ export default function Pagination({
   onPageChange,
 }: PaginationProps) {
   const paginationButtonClassName =
-    'px-4 py-2 rounded-3xl bg-blue-500 disabled:bg-blue-700 hover:bg-blue-600 hover:cursor-pointer disabled:cursor-default';
+    'px-4 py-2 rounded-3xl hover:cursor-pointer disabled:cursor-default disabled:bg-blue-200 text-blue-900 bg-blue-400 hover:bg-blue-500 dark:disabled:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white';
   return (
     <div
-      className="flex items-center gap-2 justify-center p-2 text-white sm:p-4 sm:gap-4"
+      className="flex items-center gap-2 justify-center p-2 sm:p-4 sm:gap-4"
       data-role="pagination"
     >
       <button

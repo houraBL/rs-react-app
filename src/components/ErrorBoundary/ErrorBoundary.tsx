@@ -1,7 +1,7 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 interface ErrorBoundaryProps {
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 interface ErrorBoundaryState {
@@ -33,12 +33,12 @@ export default class ErrorBoundary extends Component<
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-blue-900 text-white flex flex-col items-center justify-center p-8">
+        <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-white">
           <h1 className="text-2xl font-bold">Something went wrong!</h1>
           <p className="mt-2">{this.state.errorMessage}</p>
           <button
             onClick={this.handleReset}
-            className="mt-6 px-6 py-2 rounded-full bg-white text-blue-900 font-bold hover:bg-blue-100 transition hover:cursor-pointer"
+            className="mt-6 px-6 py-2 rounded-full hover:cursor-pointer font-bold text-blue-900 bg-blue-300 hover:bg-blue-400 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white"
           >
             Reset App
           </button>
