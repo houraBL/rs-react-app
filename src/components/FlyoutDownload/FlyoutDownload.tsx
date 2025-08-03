@@ -1,14 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../../app/store';
 import { unselectAll } from '../../store/selectionSlice';
+import { useRef } from 'react';
 
 export default function FlyoutDownload() {
   const selectedItems = useSelector((state: RootState) =>
     Object.values(state.selection.selectedItems)
   );
   const dispatch = useDispatch();
-
-  if (!selectedItems.length) return null;
+  const hiddenLink = useRef<HTMLAnchorElement | null>(null);
 
   const handleDownload = () => {
     const csvRows = [
@@ -35,14 +35,16 @@ export default function FlyoutDownload() {
     const csvContent = csvRows.map((row) => row.join(',')).join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `${selectedItems.length}_items.csv`);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+
+    const link = hiddenLink.current;
+    if (link) {
+      link.href = url;
+      link.click();
+    }
     dispatch(unselectAll());
   };
+
+  if (!selectedItems.length) return null;
 
   const buttonClassName =
     'px-4 py-2 rounded-3xl bg-blue-500 disabled:bg-blue-700 hover:bg-blue-600 hover:cursor-pointer disabled:cursor-default';
@@ -62,6 +64,11 @@ export default function FlyoutDownload() {
         <button className={buttonClassName} onClick={handleDownload}>
           Download
         </button>
+        <a
+          ref={hiddenLink}
+          className="hidden"
+          download={`${selectedItems.length}_items.csv`}
+        ></a>
       </div>
     </div>
   );
