@@ -41,7 +41,6 @@ export default function FlyoutDownload() {
       link.href = url;
       link.click();
     }
-    dispatch(unselectAll());
   };
 
   if (!selectedItems.length) return null;

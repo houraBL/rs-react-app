@@ -17,10 +17,9 @@ const store = configureStore({
 });
 
 describe('Character Card', () => {
-  it('Downloads selected items and clears store', async () => {
+  it('Downloads selected items when download item is clicked', async () => {
     globalThis.URL.createObjectURL = vi.fn(() => 'blob:fake-url');
 
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
     render(
       <Provider store={store}>
         <FlyoutDownload />
@@ -35,6 +34,20 @@ describe('Character Card', () => {
     expect(globalThis.URL.createObjectURL).toHaveBeenCalled();
     expect(link.getAttribute('href')).toBe('blob:fake-url');
     vi.spyOn(link, 'click').mockImplementation(() => {});
+  });
+
+  it('Clears the store when Unselect all is clicked', async () => {
+    globalThis.URL.createObjectURL = vi.fn(() => 'blob:fake-url');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    render(
+      <Provider store={store}>
+        <FlyoutDownload />
+      </Provider>
+    );
+
+    const unselectButton = screen.getByText('Unselect all');
+
+    await userEvent.click(unselectButton);
     expect(dispatchSpy).toHaveBeenCalledWith({ type: 'selection/unselectAll' });
   });
 });
