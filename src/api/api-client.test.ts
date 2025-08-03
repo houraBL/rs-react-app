@@ -10,54 +10,69 @@ describe('API Integration Tests', () => {
   it('Calls API with correct parameters', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve({ results: [] }),
+      json: () => Promise.resolve({ results: [], info: { pages: 1 } }),
     });
     globalThis.fetch = mockFetch;
 
     await fetchCharacters();
     expect(mockFetch).toHaveBeenCalledWith(
-      'https://rickandmortyapi.com/api/character'
+      'https://rickandmortyapi.com/api/character/?page=1'
     );
   });
 
   it('Accepts search term and makes appropriate API call', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve({ results: [] }),
+      json: () => Promise.resolve({ results: [], info: { pages: 1 } }),
     });
     globalThis.fetch = mockFetch;
 
     await fetchCharacters('rick');
     expect(mockFetch).toHaveBeenCalledWith(
-      'https://rickandmortyapi.com/api/character/?name=rick'
+      'https://rickandmortyapi.com/api/character/?name=rick&page=1'
     );
   });
 
   it('Handles successful API responses', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve({ results: [{ test: 123 }] }),
+      json: () =>
+        Promise.resolve({ results: [{ test: 123 }], info: { pages: 10 } }),
     });
     globalThis.fetch = mockFetch;
     const result = await fetchCharacters();
-    expect(result).toEqual([{ test: 123 }]);
+    expect(result).toEqual({
+      results: [{ test: 123 }],
+      totalPages: 10,
+    });
   });
 
-  it('Returns empty array when status is 404', async () => {
+  it('Throws Error when no characters found', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: false,
       status: 404,
     });
     globalThis.fetch = mockFetch;
 
-    const result = await fetchCharacters();
-    expect(result).toEqual([]);
+    await expect(fetchCharacters()).rejects.toThrow('No characters found');
   });
 
   it('Handles API error responses', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: false,
       status: 500,
+    });
+    globalThis.fetch = mockFetch;
+
+    await expect(fetchCharacters()).rejects.toThrow(
+      'Could not load your favorite characters'
+    );
+  });
+
+  it('Handles API unknown error responses', async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 600,
     });
     globalThis.fetch = mockFetch;
 

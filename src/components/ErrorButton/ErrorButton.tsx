@@ -1,31 +1,18 @@
-import { Component } from 'react';
+import { useState } from 'react';
 
-interface ErrorButtonState {
-  throwError: boolean;
-}
+export default function ErrorButton() {
+  const [shouldThrow, setShouldThrow] = useState(false);
 
-export default class ErrorButton extends Component<object, ErrorButtonState> {
-  constructor(props: object) {
-    super(props);
-    this.state = { throwError: false };
-    this.triggerError = this.triggerError.bind(this);
+  if (shouldThrow) {
+    throw new Error('Manual Error!');
   }
 
-  triggerError() {
-    this.setState({ throwError: true });
-  }
-
-  render() {
-    if (this.state.throwError) {
-      throw new Error('Manual Error!');
-    }
-    return (
-      <button
-        className="px-4 rounded-full h-10 bg-red-400 hover:cursor-pointer text-lg text-white font-bold fixed z-50 bottom-16 right-4"
-        onClick={this.triggerError}
-      >
-        Create error
-      </button>
-    );
-  }
+  return (
+    <button
+      className="px-4 rounded-full h-10 bg-red-400 hover:cursor-pointer text-lg text-white font-bold fixed z-50 bottom-16 right-4"
+      onClick={() => setShouldThrow(true)}
+    >
+      Create error
+    </button>
+  );
 }
