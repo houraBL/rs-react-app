@@ -52,14 +52,14 @@ export default function DetailsPanel() {
 
       const clickedOutsidePanel =
         panelRef.current && !panelRef.current.contains(target);
-
       const clickedCard = target.closest('[role="character-card"]');
+      const clickedCheckbox = target.closest('[role="selection-checkbox"]');
       const clickedPagination = target.closest('[data-role="pagination"]');
       if (clickedPagination) {
         return;
       }
 
-      if (clickedOutsidePanel && !clickedCard) {
+      if ((clickedOutsidePanel && !clickedCard) || clickedCheckbox) {
         navigate(`/${pageId ?? ''}`, { replace: true });
       }
     };
