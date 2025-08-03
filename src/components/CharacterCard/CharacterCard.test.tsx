@@ -4,6 +4,10 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { mockCharacter } from '../../api/__mocks__/character-details';
+import { configureStore } from '@reduxjs/toolkit';
+import selectionReducer from '../../store/selectionSlice';
+import { Provider } from 'react-redux';
+import userEvent from '@testing-library/user-event';
 
 describe('Character Card', () => {
   vi.mock('react-router-dom', async () => {
@@ -17,22 +21,56 @@ describe('Character Card', () => {
     };
   });
 
+  const store = configureStore({
+    reducer: { selection: selectionReducer },
+    preloadedState: {
+      selection: {
+        selectedItems: {
+          [mockCharacter.id]: mockCharacter,
+        },
+      },
+    },
+  });
+
   describe('Rendering Tests', () => {
     it('Displays item name and image correctly', () => {
       render(
-        <MemoryRouter>
-          <CharacterCard characterInfo={mockCharacter} />
-        </MemoryRouter>
+        <Provider store={store}>
+          <MemoryRouter>
+            <CharacterCard characterInfo={mockCharacter} />
+          </MemoryRouter>
+        </Provider>
       );
       expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
       expect(screen.getByAltText('Character portrait')).toBeInTheDocument();
     });
 
     it('Handles missing props gracefully', () => {
-      render(<CharacterCard characterInfo={undefined} />);
+      render(
+        <Provider store={store}>
+          <CharacterCard characterInfo={undefined} />
+        </Provider>
+      );
       expect(
         screen.getByText('Character information is missing')
       ).toBeInTheDocument();
+    });
+
+    it('Updates store when checkbox is clicked', async () => {
+      render(
+        <Provider store={store}>
+          <MemoryRouter initialEntries={['/1']}>
+            <CharacterCard characterInfo={mockCharacter} />
+          </MemoryRouter>
+        </Provider>
+      );
+      const checkbox = screen.getByRole('selection-checkbox');
+      expect(checkbox).toBeChecked();
+
+      await userEvent.click(checkbox);
+      expect(checkbox).not.toBeChecked();
+      await userEvent.click(checkbox);
+      expect(checkbox).toBeChecked();
     });
   });
 });

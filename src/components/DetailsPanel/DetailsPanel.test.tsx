@@ -112,19 +112,24 @@ describe('Details Panel', () => {
       });
     });
 
-    it('Ignores navigation if pagination was clicked', async () => {
+    it('Ignores navigation if pagination or checkbox was clicked', async () => {
       mockedUseParams.mockReturnValue({ pageId: '1', detailsId: '1' });
       render(
         <MemoryRouter>
           <DetailsPanel />
           <div data-role="pagination">Pagination</div>
+          <div role="selection-checkbox">Checkbox</div>
         </MemoryRouter>
       );
 
       const pagination = screen.getByText('Pagination');
-      await userEvent.click(pagination);
 
+      const checkbox = screen.getByText('Checkbox');
+      await userEvent.click(pagination);
       await expect(mockNavigate).not.toHaveBeenCalled();
+
+      await userEvent.click(checkbox);
+      await expect(mockNavigate).toHaveBeenCalledTimes(1);
     });
   });
 });

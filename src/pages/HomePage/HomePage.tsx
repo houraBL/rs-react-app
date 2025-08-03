@@ -1,6 +1,6 @@
 import Search from '../../components/Search/Search';
 import CharacterList from '../../components/CharacterList/CharacterList';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { useLocalStorage } from '../../hooks/useLocalStorage/useLocalStorage';
 import {
   Outlet,
   useNavigate,

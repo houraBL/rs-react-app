@@ -65,6 +65,7 @@ export default function FlyoutDownload() {
           Download
         </button>
         <a
+          data-testid="download-link"
           ref={hiddenLink}
           className="hidden"
           download={`${selectedItems.length}_items.csv`}
