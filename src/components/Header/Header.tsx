@@ -1,7 +1,7 @@
+import IconMoon from '@assets/icon-moon.svg';
+import IconSun from '@assets/icon-sun.svg';
+import useTheme from '@hooks/useTheme';
 import { NavLink } from 'react-router-dom';
-import { useTheme } from '../../hooks/useTheme/useTheme';
-import sun from '../../assets/sun.svg';
-import moon from '../../assets/moon.svg';
 
 export default function Header() {
   const { theme, toggleTheme } = useTheme();
@@ -22,7 +22,7 @@ export default function Header() {
       </NavLink>
       <button className={navLinkClassName + ' px-0'} onClick={toggleTheme}>
         <img
-          src={theme === 'dark' ? sun : moon}
+          src={theme === 'dark' ? IconSun : IconMoon}
           className="h-8 w-8 "
           alt={theme === 'dark' ? 'Light theme' : 'Dark theme'}
         />

@@ -1,9 +1,9 @@
+import { BASE_URL } from '@api/api-client';
+
 export async function fetchCharacterDetails(characterID: string) {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const response = await fetch(
-      `https://rickandmortyapi.com/api/character/${characterID.trim()}`
-    );
+    const response = await fetch(`${BASE_URL}/character/${characterID.trim()}`);
 
     if (!response.ok) {
       if (response.status === 404) {

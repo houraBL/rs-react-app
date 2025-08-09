@@ -1,8 +1,8 @@
+import type { CharacterInfo } from '@/types/characterInfo';
+import { fetchCharacterDetails } from '@api/character-details';
+import MainLoader from '@components/MainLoader';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import type { CharacterInfo } from '../../types/character';
-import { fetchCharacterDetails } from '../../api/character-details';
-import MainLoader from '../MainLoader/MainLoader';
 
 export default function DetailsPanel() {
   const { detailsId, pageId } = useParams();

@@ -1,6 +1,6 @@
-import { fetchCharacters } from './api-client';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { BASE_URL, fetchCharacters } from '@api/api-client';
 import '@testing-library/jest-dom';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('API Integration Tests', () => {
   beforeEach(() => {
@@ -15,9 +15,7 @@ describe('API Integration Tests', () => {
     globalThis.fetch = mockFetch;
 
     await fetchCharacters();
-    expect(mockFetch).toHaveBeenCalledWith(
-      'https://rickandmortyapi.com/api/character/?page=1'
-    );
+    expect(mockFetch).toHaveBeenCalledWith(`${BASE_URL}/character/?page=1`);
   });
 
   it('Accepts search term and makes appropriate API call', async () => {
@@ -29,7 +27,7 @@ describe('API Integration Tests', () => {
 
     await fetchCharacters('rick');
     expect(mockFetch).toHaveBeenCalledWith(
-      'https://rickandmortyapi.com/api/character/?name=rick&page=1'
+      `${BASE_URL}/character/?name=rick&page=1`
     );
   });
 
@@ -54,7 +52,12 @@ describe('API Integration Tests', () => {
     });
     globalThis.fetch = mockFetch;
 
-    await expect(fetchCharacters()).rejects.toThrow('No characters found');
+    const result = await fetchCharacters();
+
+    expect(result).toEqual({
+      results: [],
+      totalPages: 0,
+    });
   });
 
   it('Handles API error responses', async () => {

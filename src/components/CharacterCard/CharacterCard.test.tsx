@@ -1,13 +1,14 @@
-import CharacterCard from './CharacterCard';
-import { describe, it, expect, vi } from 'vitest';
+import { mockCharacter } from '@api/__mocks__/character-details';
+import { configureStore } from '@reduxjs/toolkit';
+import selectionReducer from '@store/selectionSlice';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import { mockCharacter } from '../../api/__mocks__/character-details';
-import { configureStore } from '@reduxjs/toolkit';
-import selectionReducer from '../../store/selectionSlice';
-import { Provider } from 'react-redux';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
+import { describe, expect, it, vi } from 'vitest';
+
+import CharacterCard from './CharacterCard';
 
 describe('Character Card', () => {
   vi.mock('react-router-dom', async () => {
@@ -25,9 +26,7 @@ describe('Character Card', () => {
     reducer: { selection: selectionReducer },
     preloadedState: {
       selection: {
-        selectedItems: {
-          [mockCharacter.id]: mockCharacter,
-        },
+        selectedItems: [mockCharacter],
       },
     },
   });

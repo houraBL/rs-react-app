@@ -1,22 +1,23 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import HomePage from './HomePage';
-import { useLocalStorage } from '../../hooks/useLocalStorage/useLocalStorage';
-import type { Mock } from 'vitest';
-import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
-import userEvent from '@testing-library/user-event';
+import { mockCharacter } from '@api/__mocks__/character-details';
+import useLocalStorage from '@hooks/useLocalStorage';
 import { configureStore } from '@reduxjs/toolkit';
-import selectionReducer from '../../store/selectionSlice';
+import selectionReducer from '@store/selectionSlice';
+import '@testing-library/jest-dom';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
-import { mockCharacter } from '../../api/__mocks__/character-details';
+import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Mock } from 'vitest';
+
+import HomePage from './HomePage';
 
 type SearchProps = {
   onSearchSubmit: (searchTerm: string) => void;
   searchQuery: string;
 };
 
-vi.mock('../../components/Search/Search', () => ({
+vi.mock('@components/Search/Search', () => ({
   default: ({ onSearchSubmit, searchQuery }: SearchProps) => (
     <div>
       <p>Mock Search Component</p>
@@ -26,19 +27,19 @@ vi.mock('../../components/Search/Search', () => ({
   ),
 }));
 
-vi.mock('../../components/CharacterList/CharacterList', () => ({
+vi.mock('@components/CharacterList/CharacterList', () => ({
   default: ({ searchedTerm }: { searchedTerm: string }) => (
     <div>Mock CharacterList with searchedTerm: {searchedTerm}</div>
   ),
 }));
 
-vi.mock('../../components/Pagination/Pagination', () => ({
+vi.mock('@components/Pagination/Pagination', () => ({
   default: ({ onPageChange }: { onPageChange: (n: number) => void }) => (
     <button onClick={() => onPageChange(2)}>Page 2</button>
   ),
 }));
 
-vi.mock('../../hooks/useLocalStorage/useLocalStorage');
+vi.mock('@hooks/useLocalStorage');
 
 vi.mock('react-router-dom', async () => {
   const actual =
@@ -55,9 +56,7 @@ let store = configureStore({
   reducer: { selection: selectionReducer },
   preloadedState: {
     selection: {
-      selectedItems: {
-        [mockCharacter.id]: mockCharacter,
-      },
+      selectedItems: [mockCharacter],
     },
   },
 });
@@ -72,9 +71,7 @@ describe('HomePage', () => {
       reducer: { selection: selectionReducer },
       preloadedState: {
         selection: {
-          selectedItems: {
-            [mockCharacter.id]: mockCharacter,
-          },
+          selectedItems: [mockCharacter],
         },
       },
     });
@@ -115,7 +112,7 @@ describe('HomePage', () => {
   it('Redirects to second page', async () => {
     render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={['/1']}>
+        <MemoryRouter initialEntries={['/1?name=Rick']}>
           <Routes>
             <Route path="/:pageId" element={<HomePage />} />
           </Routes>
@@ -125,5 +122,6 @@ describe('HomePage', () => {
     await userEvent.click(screen.getByText('Page 2'));
 
     expect(mockNavigate).toHaveBeenCalledWith('/2');
+    expect(window.location.search).toBe('');
   });
 });

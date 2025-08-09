@@ -1,25 +1,26 @@
-import RSSchoolLogo from '../../assets/rss-logo.svg';
-import githubLogo from '../../assets/github.svg';
+import IconGithub from '@assets/icon-github.svg';
+import IconRSS from '@assets/icon-rss.svg';
+import { GIT_LINK, RSS_LINK } from '@pages/AboutPage/AboutPage';
 
 export default function Footer() {
   return (
     <footer className="h-12 flex gap-4 items-center justify-center bg-blue-400 dark:bg-blue-600 font-bold">
       <a
-        href="https://rs.school/"
+        href={RSS_LINK}
         target="_blank"
         rel="noreferrer"
         className="flex gap-2 items-center justify-center"
       >
-        <img src={RSSchoolLogo} className="h-6" alt="RS School logo" />
+        <img src={IconRSS} className="h-6" alt="RS School logo" />
         RS School
       </a>
       <a
-        href="https://github.com/houraBL"
+        href={GIT_LINK}
         target="_blank"
         rel="noreferrer"
         className="flex gap-2 items-center justify-center"
       >
-        <img src={githubLogo} className="h-6" alt="GitHub logo" />
+        <img src={IconGithub} className="h-6" alt="GitHub logo" />
         hourabl
       </a>
     </footer>

@@ -1,12 +1,12 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { CharacterInfo } from '../types/character';
+import type { CharacterInfo } from '@/types/characterInfo';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface SelectionState {
-  selectedItems: Record<string, CharacterInfo>;
+  selectedItems: CharacterInfo[];
 }
 
 const initialState: SelectionState = {
-  selectedItems: {},
+  selectedItems: [],
 };
 
 const selectionSlice = createSlice({
@@ -14,22 +14,22 @@ const selectionSlice = createSlice({
   initialState,
   reducers: {
     toggleItem: (state, action: PayloadAction<CharacterInfo>) => {
-      const character = action.payload;
-      if (state.selectedItems[character.id]) {
-        state.selectedItems = Object.fromEntries(
-          Object.entries(state.selectedItems).filter(
-            ([key]) => key !== String(character.id)
-          )
+      const payloadCharacter = action.payload;
+      const exists = state.selectedItems.some(
+        (character) => character.id === payloadCharacter.id
+      );
+
+      if (exists) {
+        state.selectedItems = state.selectedItems.filter(
+          (character) => character.id !== payloadCharacter.id
         );
       } else {
-        state.selectedItems = {
-          ...state.selectedItems,
-          [character.id]: character,
-        };
+        state.selectedItems.push(payloadCharacter);
       }
     },
+
     unselectAll: (state) => {
-      state.selectedItems = {};
+      state.selectedItems = [];
     },
   },
 });

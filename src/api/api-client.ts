@@ -1,4 +1,6 @@
-import type { CharacterInfo } from '../types/character';
+import type { CharacterInfo } from '@/types/characterInfo';
+
+export const BASE_URL = 'https://rickandmortyapi.com/api';
 
 export async function fetchCharacters(
   searchTerm?: string,
@@ -14,13 +16,11 @@ export async function fetchCharacters(
     }
 
     params.set('page', page.toString());
-    const response = await fetch(
-      `https://rickandmortyapi.com/api/character/?${params.toString()}`
-    );
+    const response = await fetch(`${BASE_URL}/character/?${params.toString()}`);
 
     if (!response.ok) {
       if (response.status === 404) {
-        throw new Error('No characters found');
+        return { results: [], totalPages: 0 };
       }
       if (response.status === 500)
         throw new Error('Could not load your favorite characters');

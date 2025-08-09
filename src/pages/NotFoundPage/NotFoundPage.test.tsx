@@ -1,8 +1,9 @@
-import { describe, it, expect } from 'vitest';
+import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { describe, expect, it } from 'vitest';
+
 import NotFoundPage from './NotFoundPage';
-import '@testing-library/jest-dom';
 
 describe('NotFoundPage', () => {
   it('renders "Page not found" message', () => {

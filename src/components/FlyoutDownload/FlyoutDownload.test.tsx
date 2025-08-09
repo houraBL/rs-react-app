@@ -1,17 +1,18 @@
-import { describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import FlyoutDownload from './FlyoutDownload';
-import { mockCharacter } from '../../api/__mocks__/character-details';
-import userEvent from '@testing-library/user-event';
+import { mockCharacter } from '@api/__mocks__/character-details';
 import { configureStore } from '@reduxjs/toolkit';
-import selectionReducer from '../../store/selectionSlice';
+import selectionReducer from '@store/selectionSlice';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
+import { describe, expect, it, vi } from 'vitest';
+
+import FlyoutDownload from './FlyoutDownload';
 
 const store = configureStore({
   reducer: { selection: selectionReducer },
   preloadedState: {
     selection: {
-      selectedItems: { '1': mockCharacter },
+      selectedItems: [mockCharacter],
     },
   },
 });

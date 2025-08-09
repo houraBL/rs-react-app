@@ -1,10 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import '@testing-library/jest-dom';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useNavigate, MemoryRouter, Routes, Route } from 'react-router-dom';
-import Search from './Search';
+import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { type Mock } from 'vitest';
-import '@testing-library/jest-dom';
+
+import Search from './Search';
 
 vi.mock('react-router-dom', async () => {
   const actual =

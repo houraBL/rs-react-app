@@ -1,17 +1,18 @@
-import { describe, it, expect, vi } from 'vitest';
+import { ThemeProvider } from '@/providers/ThemeProvider';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import Header from './Header';
-import { ThemeProvider } from '../../providers/ThemeProvider';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
+import { describe, expect, it, vi } from 'vitest';
+
+import Header from './Header';
 
 describe('Header', () => {
-  vi.mock('../../assets/moon.svg', () => ({
+  vi.mock('@assets/icon-moon.svg', () => ({
     default: 'moon.svg',
   }));
 
-  vi.mock('../../assets/sun.svg', () => ({
+  vi.mock('@assets/icon-sun.svg', () => ({
     default: 'sun.svg',
   }));
 
@@ -46,5 +47,15 @@ describe('Header', () => {
     await userEvent.click(themeButton);
     expect(imgage).toHaveAttribute('src', expect.stringContaining('moon.svg'));
     expect(imgage).toHaveAttribute('alt', 'Dark theme');
+  });
+
+  it('Throws error when outside of theme provider', async () => {
+    expect(() =>
+      render(
+        <MemoryRouter>
+          <Header />
+        </MemoryRouter>
+      )
+    ).toThrow('no ThemeProvider');
   });
 });

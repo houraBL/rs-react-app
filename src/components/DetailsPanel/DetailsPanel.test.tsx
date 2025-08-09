@@ -1,12 +1,13 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
+import { fetchCharacterDetails } from '@api/character-details';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, useNavigate } from 'react-router-dom';
-import DetailsPanel from './DetailsPanel';
-import { fetchCharacterDetails } from '../../api/character-details';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter, useNavigate } from 'react-router-dom';
+import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../../api/character-details');
+import DetailsPanel from './DetailsPanel';
+
+vi.mock('@api/character-details');
 vi.mock('react-router-dom', async () => {
   const actual =
     await vi.importActual<typeof import('react-router-dom')>(

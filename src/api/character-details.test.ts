@@ -1,6 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { BASE_URL } from '@api/api-client';
+import { fetchCharacterDetails } from '@api/character-details';
 import '@testing-library/jest-dom';
-import { fetchCharacterDetails } from './character-details';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('Character Details API Integration Tests', () => {
   beforeEach(() => {
@@ -15,9 +16,7 @@ describe('Character Details API Integration Tests', () => {
     globalThis.fetch = mockFetch;
 
     await fetchCharacterDetails('1');
-    expect(mockFetch).toHaveBeenCalledWith(
-      'https://rickandmortyapi.com/api/character/1'
-    );
+    expect(mockFetch).toHaveBeenCalledWith(`${BASE_URL}/character/1`);
   });
 
   it('Handles successful API responses', async () => {

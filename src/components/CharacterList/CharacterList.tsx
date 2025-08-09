@@ -1,7 +1,7 @@
-import CharacterCard from '../CharacterCard/CharacterCard';
-import MainLoader from '../MainLoader/MainLoader';
-import { fetchCharacters } from '../../api/api-client';
-import type { CharacterInfo } from '../../types/character';
+import type { CharacterInfo } from '@/types/characterInfo';
+import { fetchCharacters } from '@api/api-client';
+import CharacterCard from '@components/CharacterCard';
+import MainLoader from '@components/MainLoader';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
