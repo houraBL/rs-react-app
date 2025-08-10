@@ -1,50 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useGetCharacterByIdQuery } from '@api/rickAndMorty';
+import MainLoader from '@components/MainLoader';
+import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import type { CharacterInfo } from '../../types/character';
-import { fetchCharacterDetails } from '../../api/character-details';
-import MainLoader from '../MainLoader/MainLoader';
 
 export default function DetailsPanel() {
   const { detailsId, pageId } = useParams();
-  const [character, setCharacter] = useState<CharacterInfo | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    let isCancelled = false;
-    if (!detailsId) {
-      setCharacter(null);
-      return;
-    }
-    const loadCharacters = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const { result } = await fetchCharacterDetails(detailsId);
-        if (!isCancelled) {
-          setCharacter(result);
-        }
-      } catch (err: unknown) {
-        if (!isCancelled) {
-          const message =
-            err instanceof Error ? err.message : 'Unknown error occurred';
-          setError(message);
-        }
-      } finally {
-        if (!isCancelled) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadCharacters();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [detailsId]);
+  const { data, error, isLoading, isFetching, refetch } =
+    useGetCharacterByIdQuery(detailsId?.toString() || '1');
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -74,7 +38,7 @@ export default function DetailsPanel() {
     'relative sticky top-20 my-4 mx-2 sm:mx-6 p-4 px-4 sm:px-6 h-fit bg-blue-100 dark:bg-blue-600 rounded-3xl flex flex-col gap-2 min-w-40 w-60 sm:min-w-60';
 
   if (!detailsId) return null;
-  if (loading)
+  if (isLoading || isFetching)
     return (
       <div
         className={detailsClassName + ' items-center justify-center'}
@@ -85,17 +49,26 @@ export default function DetailsPanel() {
     );
 
   if (error) {
+    const messages: Record<number, string> = {
+      404: 'Character not found',
+      500: 'Could not load your favorite character',
+    };
+    let message = 'Unknown error occurred';
+
+    const { status } = error as { status: number; data: unknown };
+    message = messages[status] ?? message;
+
     return (
       <div className={detailsClassName} ref={panelRef}>
-        Error: {error}
+        Error: {message}
       </div>
     );
   }
 
-  if (!character)
+  if (!data)
     return (
       <div className={detailsClassName} ref={panelRef}>
-        Character not found
+        Error: Unknown error occurred
       </div>
     );
 
@@ -112,16 +85,18 @@ export default function DetailsPanel() {
       >
         ✕
       </button>
-      <h2 className="text-sm sm:text-xl font-bold">{character.name}</h2>
-      <img
-        src={character?.image}
-        className="rounded-3xl"
-        alt={character?.name}
-      />
-      <p className="text-sm sm:text-lg">Status: {character.status}</p>
-      <p className="text-sm sm:text-lg">Species: {character.species}</p>
-      <p className="text-sm sm:text-lg">Gender: {character.gender}</p>
-      <p className="text-sm sm:text-lg">Origin: {character.origin?.name}</p>
+      <h2 className="text-sm sm:text-xl font-bold">{data.name}</h2>
+      <img src={data.image} className="rounded-3xl" alt={data.name} />
+      <p className="text-sm sm:text-lg">Status: {data.status}</p>
+      <p className="text-sm sm:text-lg">Species: {data.species}</p>
+      <p className="text-sm sm:text-lg">Gender: {data.gender}</p>
+      <p className="text-sm sm:text-lg">Origin: {data.origin?.name}</p>
+      <button
+        className="px-4 rounded-full h-10 border-2 border-white bg-cyan-400 dark:bg-cyan-600 hover:cursor-pointer text-lg font-bold z-50"
+        onClick={() => refetch()}
+      >
+        refetch details
+      </button>
     </div>
   );
 }

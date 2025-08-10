@@ -1,8 +1,9 @@
-import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
-import Pagination from './Pagination';
 import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
+
+import Pagination from './Pagination';
 
 describe('Pagination', () => {
   const setup = (currentPage: number, totalPages: number) => {

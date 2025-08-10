@@ -1,11 +1,11 @@
-import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '../../app/store';
-import { unselectAll } from '../../store/selectionSlice';
+import type { RootState } from '@app/store';
+import { unselectAll } from '@store/selectionSlice';
 import { useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function FlyoutDownload() {
-  const selectedItems = useSelector((state: RootState) =>
-    Object.values(state.selection.selectedItems)
+  const selectedItems = useSelector(
+    (state: RootState) => state.selection.selectedItems
   );
   const dispatch = useDispatch();
   const hiddenLink = useRef<HTMLAnchorElement | null>(null);

@@ -1,15 +1,15 @@
-import Search from '../../components/Search/Search';
-import CharacterList from '../../components/CharacterList/CharacterList';
-import { useLocalStorage } from '../../hooks/useLocalStorage/useLocalStorage';
+import CharacterList from '@components/CharacterList';
+import FlyoutDownload from '@components/FlyoutDownload';
+import Pagination from '@components/Pagination';
+import Search from '@components/Search';
+import useLocalStorage from '@hooks/useLocalStorage';
+import { useEffect, useState } from 'react';
 import {
   Outlet,
   useNavigate,
   useParams,
   useSearchParams,
 } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import Pagination from '../../components/Pagination/Pagination';
-import FlyoutDownload from '../../components/FlyoutDownload/FlyoutDownload';
 
 export default function HomePage() {
   const [localSearchTerm, setLocalSearchTerm] = useLocalStorage('search', '');

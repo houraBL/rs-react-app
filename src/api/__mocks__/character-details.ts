@@ -1,5 +1,5 @@
-import { vi } from 'vitest';
-import type { CharacterInfo } from '../../types/character';
+import type { CharacterInfo } from '@/types/characterInfo';
+
 export const mockCharacter: CharacterInfo = {
   id: 1,
   name: 'Rick Sanchez',
@@ -9,12 +9,8 @@ export const mockCharacter: CharacterInfo = {
   gender: 'Male',
   origin: { name: 'Earth (C-137)', url: '' },
   location: { name: 'Citadel of Ricks', url: '' },
-  image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+  image: `1.jpeg`,
   episode: [],
   url: '',
   created: '',
 };
-
-export const fetchCharacterDetails = vi.fn(() =>
-  Promise.resolve({ result: mockCharacter })
-);

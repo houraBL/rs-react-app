@@ -5,10 +5,15 @@ export interface CharacterInfo {
   species?: string;
   type?: string;
   gender?: string;
-  origin?: { name: string; url: string };
-  location?: { name: string; url: string };
+  origin?: locationUrl;
+  location?: locationUrl;
   image?: string;
   episode?: string[];
   url?: string;
   created?: string;
+}
+
+interface locationUrl {
+  name: string;
+  url: string;
 }

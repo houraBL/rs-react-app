@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 
-export const useLocalStorage = (
+export const LS_KEYS = {
+  THEME: 'theme',
+  SEARCH: 'search',
+};
+
+const useLocalStorage = (
   key: string,
   initialValue: string = ''
 ): [string, React.Dispatch<React.SetStateAction<string>>] => {
@@ -15,3 +20,5 @@ export const useLocalStorage = (
 
   return [value, setValue];
 };
+
+export default useLocalStorage;

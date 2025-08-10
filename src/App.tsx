@@ -1,8 +1,8 @@
-import './App.css';
-import Footer from './components/Footer/Footer';
+import '@/App.css';
+import { ThemeProvider } from '@/providers/ThemeProvider';
+import Footer from '@components/Footer/Footer';
+import Header from '@components/Header/Header';
 import { Outlet } from 'react-router-dom';
-import Header from './components/Header/Header';
-import { ThemeProvider } from './providers/ThemeProvider';
 
 export default function App() {
   return (

@@ -18,19 +18,21 @@ export default function Pagination({
     >
       <button
         onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage <= 1}
+        disabled={currentPage <= 1 || totalPages === 0}
         className={paginationButtonClassName}
       >
         Prev
       </button>
 
-      <span className="text-sm font-bold sm:text-lg">
-        Page {currentPage} of {totalPages}
-      </span>
+      {totalPages > 0 && (
+        <span className="text-sm font-bold sm:text-lg">
+          Page {currentPage} of {totalPages}
+        </span>
+      )}
 
       <button
         onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage >= totalPages}
+        disabled={currentPage >= totalPages || totalPages === 0}
         className={paginationButtonClassName}
       >
         Next

@@ -1,15 +1,16 @@
+import App from '@/App.tsx';
+import { store } from '@app/store.ts';
+import DetailsPanel from '@components/DetailsPanel/DetailsPanel.tsx';
+import ErrorBoundary from '@components/ErrorBoundary/ErrorBoundary.tsx';
+import AboutPage from '@pages/AboutPage';
+import HomePage from '@pages/HomePage';
+import NotFoundPage from '@pages/NotFoundPage';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.css';
-import App from './App.tsx';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary.tsx';
-import HomePage from './pages/HomePage/HomePage.tsx';
-import AboutPage from './pages/AboutPage/AboutPage.tsx';
-import NotFoundPage from './pages/NotFoundPage/NotFoundPage.tsx';
-import DetailsPanel from './components/DetailsPanel/DetailsPanel.tsx';
 import { Provider } from 'react-redux';
-import { store } from './app/store.ts';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+
+import './index.css';
 
 const router = createBrowserRouter([
   {

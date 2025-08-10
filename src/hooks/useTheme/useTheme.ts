@@ -1,7 +1,7 @@
+import { ThemeContext } from '@/providers/ThemeProvider';
 import { useContext } from 'react';
-import { ThemeContext } from '../../providers/ThemeProvider';
 
-export function useTheme() {
+export default function useTheme() {
   const context = useContext(ThemeContext);
   if (!context) {
     throw new Error('no ThemeProvider');

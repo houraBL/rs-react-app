@@ -1,9 +1,10 @@
-import ErrorBoundary from './ErrorBoundary';
-import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
+import ErrorButton from '@components/ErrorButton';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import ErrorButton from '../ErrorButton/ErrorButton';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import ErrorBoundary from './ErrorBoundary';
 
 describe('Error Boundary', () => {
   let consoleErrorSpy: ReturnType<typeof vi.spyOn>;

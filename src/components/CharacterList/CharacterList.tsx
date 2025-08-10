@@ -1,8 +1,7 @@
-import CharacterCard from '../CharacterCard/CharacterCard';
-import MainLoader from '../MainLoader/MainLoader';
-import { fetchCharacters } from '../../api/api-client';
-import type { CharacterInfo } from '../../types/character';
-import { useEffect, useState } from 'react';
+import { useGetCharactersByNameQuery } from '@api/rickAndMorty';
+import CharacterCard from '@components/CharacterCard';
+import MainLoader from '@components/MainLoader';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 type CharacterListProps = {
@@ -13,58 +12,32 @@ export default function CharacterList({
   searchedTerm,
   setTotalPages,
 }: CharacterListProps) {
-  const [characters, setCharacters] = useState<CharacterInfo[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { pageId } = useParams();
   const navigate = useNavigate();
 
   const page = Number(pageId ?? '1');
+  useEffect(() => {
+    if (Number.isNaN(page) || typeof page !== 'number') {
+      navigate('/not-found', { replace: true });
+    }
+  }, [page, navigate]);
+
+  const { data, error, isLoading, isFetching, refetch } =
+    useGetCharactersByNameQuery({
+      name: searchedTerm,
+      page: page,
+    });
 
   useEffect(() => {
-    let isCancelled = false;
-
-    const loadCharacters = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        if (Number.isNaN(page) || typeof page !== 'number') {
-          navigate('/not-found', { replace: true });
-          return;
-        }
-        const { results, totalPages } = await fetchCharacters(
-          searchedTerm,
-          page
-        );
-
-        if (!isCancelled) {
-          setCharacters(results);
-          setTotalPages(totalPages);
-        }
-      } catch (err: unknown) {
-        if (!isCancelled) {
-          const message =
-            err instanceof Error ? err.message : 'Unknown error occurred';
-          setError(message);
-        }
-      } finally {
-        if (!isCancelled) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadCharacters();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [navigate, page, searchedTerm, setTotalPages]);
+    if (data) {
+      setTotalPages(data.info.pages);
+    }
+  }, [data, setTotalPages]);
 
   const containerClassName =
     'flex flex-wrap flex-row gap-2 sm:gap-6 p-2 py-4 items-center justify-center mx-auto';
 
-  if (loading)
+  if (isLoading || isFetching)
     return (
       <div className="flex-grow flex items-center justify-center">
         <MainLoader />
@@ -72,10 +45,23 @@ export default function CharacterList({
     );
 
   if (error) {
-    return <div className={containerClassName}>Error: {error}</div>;
+    const messages: Record<number, string> = {
+      404: 'There is nothing here',
+      500: 'Could not load your favorite characters',
+    };
+    let message = 'Unknown error occurred';
+    const { status } = error as { status: number; data: unknown };
+
+    if (status === 404) {
+      setTotalPages(0);
+    }
+
+    message = messages[status] ?? message;
+
+    return <div className={containerClassName}>Error: {message}</div>;
   }
 
-  if (characters.length === 0) {
+  if (data?.results.length === 0) {
     return <div className={containerClassName}>Error: No characters found</div>;
   }
 
@@ -84,10 +70,16 @@ export default function CharacterList({
       className="flex flex-wrap flex-row gap-2 sm:gap-6 p-2 py-4 items-center justify-center "
       aria-label="characters-cards-container"
     >
-      {characters &&
-        characters.map((characterInfo) => (
+      {data &&
+        data.results.map((characterInfo) => (
           <CharacterCard key={characterInfo.id} characterInfo={characterInfo} />
         ))}
+      <button
+        className="px-4 rounded-full h-10 border-2 border-white bg-cyan-400 dark:bg-cyan-600 hover:cursor-pointer text-lg font-bold fixed z-50 bottom-16 right-4"
+        onClick={() => refetch()}
+      >
+        force new API call
+      </button>
     </div>
   );
 }

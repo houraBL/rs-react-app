@@ -1,8 +1,8 @@
-import { Link, useParams } from 'react-router-dom';
-import type { CharacterInfo } from '../../types/character';
-import { toggleItem } from '../../store/selectionSlice';
+import type { CharacterInfo } from '@/types/characterInfo';
+import type { RootState } from '@app/store';
+import { toggleItem } from '@store/selectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '../../app/store';
+import { Link, useParams } from 'react-router-dom';
 
 export default function CharacterCard({
   characterInfo,
@@ -38,7 +38,7 @@ export default function CharacterCard({
       <input
         role="selection-checkbox"
         type="checkbox"
-        checked={!!selectedItems[characterInfo.id]}
+        checked={selectedItems.some((item) => item.id === characterInfo.id)}
         onChange={handleCheckboxChange}
         className="absolute top-0 right-0 sm:top-4 sm:right-4 w-4 h-4 hover:cursor-pointer border-blue-300 rounded-sm focus:ring-white focus:ring-2"
       />

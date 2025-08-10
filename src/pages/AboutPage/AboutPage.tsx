@@ -1,6 +1,10 @@
-import RSSchoolLogo from '../../assets/rss-logo.svg';
-import githubLogo from '../../assets/github.svg';
-import APILogo from '../../assets/rick-and-morti.svg';
+import IconAPI from '@assets/icon-api.svg';
+import IconGit from '@assets/icon-github.svg';
+import IconRSS from '@assets/icon-rss.svg';
+
+export const API_LINK = 'https://rickandmortyapi.com/';
+export const RSS_LINK = 'https://rs.school/courses/reactjs';
+export const GIT_LINK = 'https://github.com/houraBL';
 
 export default function AboutPage() {
   const linkClass =
@@ -12,31 +16,16 @@ export default function AboutPage() {
         This is the About page. <br />
         This app was possible thanks to Rick and Morty API
       </p>
-      <a
-        href="https://rickandmortyapi.com/"
-        target="_blank"
-        rel="noreferrer"
-        className={linkClass}
-      >
-        <img src={APILogo} className="h-6" alt="Rick and Morty API logo" />
+      <a href={API_LINK} target="_blank" rel="noreferrer" className={linkClass}>
+        <img src={IconAPI} className="h-6" alt="Rick and Morty API logo" />
         Rick and Morty API
       </a>
-      <a
-        href="https://rs.school/"
-        target="_blank"
-        rel="noreferrer"
-        className={linkClass}
-      >
-        <img src={RSSchoolLogo} className="h-6" alt="RS School logo" />
+      <a href={RSS_LINK} target="_blank" rel="noreferrer" className={linkClass}>
+        <img src={IconRSS} className="h-6" alt="RS School logo" />
         RS School
       </a>
-      <a
-        href="https://github.com/houraBL"
-        target="_blank"
-        rel="noreferrer"
-        className={linkClass}
-      >
-        <img src={githubLogo} className="h-6" alt="GitHub logo" />
+      <a href={GIT_LINK} target="_blank" rel="noreferrer" className={linkClass}>
+        <img src={IconGit} className="h-6" alt="GitHub logo" />
         hourabl
       </a>
     </div>
