@@ -1,5 +1,4 @@
 import type { CharacterInfo } from '@/types/characterInfo';
-import { vi } from 'vitest';
 
 export const mockCharacter: CharacterInfo = {
   id: 1,
@@ -15,7 +14,3 @@ export const mockCharacter: CharacterInfo = {
   url: '',
   created: '',
 };
-
-export const fetchCharacterDetails = vi.fn(() =>
-  Promise.resolve({ result: mockCharacter })
-);

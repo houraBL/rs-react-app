@@ -18,7 +18,7 @@ export default function Pagination({
     >
       <button
         onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage <= 1}
+        disabled={currentPage <= 1 || totalPages === 0}
         className={paginationButtonClassName}
       >
         Prev
@@ -32,7 +32,7 @@ export default function Pagination({
 
       <button
         onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage >= totalPages}
+        disabled={currentPage >= totalPages || totalPages === 0}
         className={paginationButtonClassName}
       >
         Next

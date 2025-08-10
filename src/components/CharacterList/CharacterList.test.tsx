@@ -1,5 +1,10 @@
+import { mockCharacters } from '@api/__mocks__/api-client';
 import { mockCharacter } from '@api/__mocks__/character-details';
-import { configureStore } from '@reduxjs/toolkit';
+import {
+  rickAndMortyAPI,
+  useGetCharactersByNameQuery,
+} from '@api/rickAndMorty';
+import { configureStore } from '@reduxjs/toolkit/react';
 import selectionReducer from '@store/selectionSlice';
 import '@testing-library/jest-dom';
 import { act, render, screen } from '@testing-library/react';
@@ -21,18 +26,33 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
+const mockedGetCharacters = vi.mocked(useGetCharactersByNameQuery);
+vi.mock('@api/rickAndMorty', async () => {
+  const actual =
+    await vi.importActual<typeof import('@api/rickAndMorty')>(
+      '@api/rickAndMorty'
+    );
+  return {
+    ...actual,
+    useGetCharactersByNameQuery: vi.fn(),
+  };
+});
+
 const store = configureStore({
-  reducer: { selection: selectionReducer },
+  reducer: {
+    selection: selectionReducer,
+    [rickAndMortyAPI.reducerPath]: rickAndMortyAPI.reducer,
+  },
   preloadedState: {
     selection: {
       selectedItems: [mockCharacter],
     },
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(rickAndMortyAPI.middleware),
 });
 
 describe('CharacterList', () => {
-  vi.mock('../../api/api-client');
-
   const mockNavigate = vi.fn();
 
   beforeEach(() => {
@@ -43,36 +63,53 @@ describe('CharacterList', () => {
 
   describe('Rendering Tests', () => {
     it('Renders correct number of items when data is provided', async () => {
+      mockedGetCharacters.mockReturnValueOnce({
+        data: {
+          info: {
+            count: 0,
+            pages: 1,
+            next: null,
+            prev: null,
+          },
+          results: mockCharacters,
+        },
+        error: undefined,
+        isLoading: false,
+        isFetching: false,
+        refetch: vi.fn(),
+      });
       render(
-        <Provider store={store}>
-          <MemoryRouter>
+        <MemoryRouter>
+          <Provider store={store}>
             <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
-          </MemoryRouter>
-        </Provider>
+          </Provider>
+        </MemoryRouter>
       );
       const cards = await screen.findAllByRole('character-card');
       expect(cards).toHaveLength(3);
     });
 
     it('Displays "no results" message when data array is empty', async () => {
-      const { fetchCharacters } = await import('../../api/api-client');
-      const mockedFetchCharacters = vi.mocked(fetchCharacters);
-      mockedFetchCharacters.mockImplementationOnce(
-        () =>
-          new Promise((resolve) =>
-            setTimeout(
-              () =>
-                resolve({
-                  results: [],
-                  totalPages: 1,
-                }),
-              0
-            )
-          )
-      );
+      mockedGetCharacters.mockReturnValue({
+        data: {
+          info: {
+            count: 0,
+            pages: 1,
+            next: null,
+            prev: null,
+          },
+          results: [],
+        },
+        error: undefined,
+        isLoading: false,
+        isFetching: false,
+        refetch: vi.fn(),
+      });
       render(
         <MemoryRouter>
-          <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
+          <Provider store={store}>
+            <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
+          </Provider>
         </MemoryRouter>
       );
       const errorMessage = await screen.findByText(
@@ -82,22 +119,21 @@ describe('CharacterList', () => {
     });
 
     it('Shows loading state while fetching data', async () => {
-      const { fetchCharacters } = await import('../../api/api-client');
-      const mockedFetchCharacters = vi.mocked(fetchCharacters);
-
-      mockedFetchCharacters.mockImplementationOnce(
-        () =>
-          new Promise((resolve) =>
-            setTimeout(
-              () =>
-                resolve({
-                  results: [],
-                  totalPages: 1,
-                }),
-              300
-            )
-          )
-      );
+      mockedGetCharacters.mockReturnValueOnce({
+        data: {
+          info: {
+            count: 0,
+            pages: 1,
+            next: null,
+            prev: null,
+          },
+          results: [],
+        },
+        error: undefined,
+        isLoading: true,
+        isFetching: true,
+        refetch: vi.fn(),
+      });
       render(
         <MemoryRouter>
           <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
@@ -109,6 +145,21 @@ describe('CharacterList', () => {
 
   describe('Data Display Tests', () => {
     it('Correctly displays item names and descriptions', async () => {
+      mockedGetCharacters.mockReturnValueOnce({
+        data: {
+          info: {
+            count: 0,
+            pages: 1,
+            next: null,
+            prev: null,
+          },
+          results: mockCharacters,
+        },
+        error: undefined,
+        isLoading: false,
+        isFetching: false,
+        refetch: vi.fn(),
+      });
       render(
         <Provider store={store}>
           <MemoryRouter>
@@ -116,66 +167,65 @@ describe('CharacterList', () => {
           </MemoryRouter>
         </Provider>
       );
-      expect(await screen.findByText('Test Name 1')).toBeInTheDocument();
-      expect(await screen.findByText('Test Name 2')).toBeInTheDocument();
-      expect(await screen.findByText('Test Name 3')).toBeInTheDocument();
+      for (const character of mockCharacters) {
+        expect(await screen.findByText(character.name)).toBeInTheDocument();
+      }
     });
   });
 
   describe('Error Handling Tests', () => {
     it('Displays error message when API call fails', async () => {
-      const { fetchCharacters } = await import('../../api/api-client');
-      const mockedFetchCharacters = vi.mocked(fetchCharacters);
-
-      mockedFetchCharacters.mockRejectedValueOnce(new Error('Failed to fetch'));
-      render(
-        <MemoryRouter>
-          <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
-        </MemoryRouter>
-      );
-      const errorMessage = await screen.findByText('Error: Failed to fetch');
-      expect(errorMessage).toBeInTheDocument();
-    });
-
-    it('Displays error message when API call fails', async () => {
-      const { fetchCharacters } = await import('../../api/api-client');
-      const mockedFetchCharacters = vi.mocked(fetchCharacters);
-
-      mockedFetchCharacters.mockResolvedValueOnce({
-        results: [],
-        totalPages: 1,
+      mockedGetCharacters.mockReturnValue({
+        data: {
+          info: {
+            count: 0,
+            pages: 1,
+            next: null,
+            prev: null,
+          },
+          results: [],
+        },
+        error: undefined,
+        isLoading: false,
+        isFetching: false,
+        refetch: vi.fn(),
       });
       const { rerender } = render(
-        <Provider store={store}>
-          <MemoryRouter>
+        <MemoryRouter>
+          <Provider store={store}>
             <CharacterList searchedTerm="rick" setTotalPages={setTotalPages} />
-          </MemoryRouter>
-        </Provider>
+          </Provider>
+        </MemoryRouter>
       );
-      expect(mockedFetchCharacters).toBeCalledTimes(1);
+      expect(mockedGetCharacters).toBeCalledTimes(1);
       await act(async () => {
         await rerender(
-          <Provider store={store}>
-            <MemoryRouter>
+          <MemoryRouter>
+            <Provider store={store}>
               <CharacterList
                 searchedTerm="morty"
                 setTotalPages={setTotalPages}
               />
-            </MemoryRouter>
-          </Provider>
+            </Provider>
+          </MemoryRouter>
         );
       });
-      expect(mockedFetchCharacters).toBeCalledTimes(2);
+      expect(mockedGetCharacters).toBeCalledTimes(2);
     });
 
     it('Displays unknown error message when non-error was thrown', async () => {
-      const { fetchCharacters } = await import('../../api/api-client');
-      const mockedFetchCharacters = vi.mocked(fetchCharacters);
-
-      mockedFetchCharacters.mockRejectedValueOnce('123');
+      mockedGetCharacters.mockReturnValueOnce({
+        data: undefined,
+        error: '123',
+        isLoading: false,
+        isFetching: false,
+        refetch: vi.fn(),
+      });
       render(
         <MemoryRouter>
-          <CharacterList searchedTerm="rick" setTotalPages={setTotalPages} />
+          <Provider store={store}>
+            <CharacterList searchedTerm="rick" setTotalPages={setTotalPages} />
+          </Provider>
         </MemoryRouter>
       );
       const errorMessage = await screen.findByText(
@@ -184,17 +234,40 @@ describe('CharacterList', () => {
       expect(errorMessage).toBeInTheDocument();
     });
 
+    it('Set pages to 0 on 404 response', async () => {
+      mockedGetCharacters.mockReturnValueOnce({
+        data: undefined,
+        error: { status: 404, data: undefined },
+        isLoading: false,
+        isFetching: false,
+        refetch: vi.fn(),
+      });
+      render(
+        <MemoryRouter>
+          <Provider store={store}>
+            <CharacterList searchedTerm="rick" setTotalPages={setTotalPages} />
+          </Provider>
+        </MemoryRouter>
+      );
+      expect(setTotalPages).toBeCalledWith(0);
+    });
+
     it('Redirects to not-found page is pageId is invalid', async () => {
       render(
         <MemoryRouter initialEntries={['/abc']}>
-          <Routes>
-            <Route
-              path="/:pageId"
-              element={
-                <CharacterList searchedTerm="" setTotalPages={setTotalPages} />
-              }
-            />
-          </Routes>
+          <Provider store={store}>
+            <Routes>
+              <Route
+                path="/:pageId"
+                element={
+                  <CharacterList
+                    searchedTerm=""
+                    setTotalPages={setTotalPages}
+                  />
+                }
+              />
+            </Routes>
+          </Provider>
         </MemoryRouter>
       );
       await expect(mockNavigate).toHaveBeenCalledWith('/not-found', {
