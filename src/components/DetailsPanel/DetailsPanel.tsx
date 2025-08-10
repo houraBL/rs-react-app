@@ -7,9 +7,8 @@ export default function DetailsPanel() {
   const { detailsId, pageId } = useParams();
   const panelRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { data, error, isLoading, isFetching } = useGetCharacterByIdQuery(
-    detailsId?.toString() || '1'
-  );
+  const { data, error, isLoading, isFetching, refetch } =
+    useGetCharacterByIdQuery(detailsId?.toString() || '1');
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -92,6 +91,12 @@ export default function DetailsPanel() {
       <p className="text-sm sm:text-lg">Species: {data.species}</p>
       <p className="text-sm sm:text-lg">Gender: {data.gender}</p>
       <p className="text-sm sm:text-lg">Origin: {data.origin?.name}</p>
+      <button
+        className="px-4 rounded-full h-10 border-2 border-white bg-cyan-400 dark:bg-cyan-600 hover:cursor-pointer text-lg font-bold z-50"
+        onClick={() => refetch()}
+      >
+        refetch details
+      </button>
     </div>
   );
 }
