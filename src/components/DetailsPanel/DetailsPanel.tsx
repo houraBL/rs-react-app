@@ -1,14 +1,27 @@
+'use client';
+
 import { useGetCharacterByIdQuery } from '@api/rickAndMorty';
 import MainLoader from '@components/MainLoader';
-import { useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useRef } from 'react';
 
-export default function DetailsPanel() {
-  const { detailsId, pageId } = useParams();
+export default function DetailsPanel({
+  detailsId,
+  pageId,
+}: {
+  detailsId: string;
+  pageId: string;
+}) {
   const panelRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { data, error, isLoading, isFetching, refetch } =
     useGetCharacterByIdQuery(detailsId?.toString() || '1');
+
+  const getBaseUrl = useCallback(() => {
+    const params = searchParams?.toString();
+    return params ? `/${pageId}?${params}` : `/${pageId}`;
+  }, [pageId, searchParams]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -24,7 +37,7 @@ export default function DetailsPanel() {
       }
 
       if ((clickedOutsidePanel && !clickedCard) || clickedCheckbox) {
-        navigate(`/${pageId ?? ''}`, { replace: true });
+        router.replace(getBaseUrl());
       }
     };
 
@@ -32,7 +45,7 @@ export default function DetailsPanel() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [navigate, pageId]);
+  }, [getBaseUrl, pageId, router]);
 
   const detailsClassName =
     'relative sticky top-20 my-4 mx-2 sm:mx-6 p-4 px-4 sm:px-6 h-fit bg-blue-100 dark:bg-blue-600 rounded-3xl flex flex-col gap-2 min-w-40 w-60 sm:min-w-60';
@@ -76,7 +89,7 @@ export default function DetailsPanel() {
     <div className={detailsClassName} ref={panelRef}>
       <button
         type="button"
-        onClick={() => navigate(`/${pageId ?? ''}`, { replace: true })}
+        onClick={() => router.replace(getBaseUrl())}
         className={
           'w-6 h-6 flex items-center justify-center text-lg font-bold cursor-pointer rounded-full absolute -right-1.5 -top-1.5 ' +
           'text-white bg-blue-400 hover:bg-blue-500 dark:text-blue-900 dark:bg-blue-400 dark:hover:bg-blue-500'

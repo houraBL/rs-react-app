@@ -1,7 +1,7 @@
+import selectionReducer from '@/utils/selectionSlice';
 import { rickAndMortyAPI } from '@api/rickAndMorty';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
-import selectionReducer from '@store/selectionSlice';
 
 export const store = configureStore({
   reducer: {

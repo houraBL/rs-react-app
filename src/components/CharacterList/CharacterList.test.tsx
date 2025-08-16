@@ -1,3 +1,4 @@
+import selectionReducer from '@/utils/selectionSlice';
 import { mockCharacters } from '@api/__mocks__/api-client';
 import { mockCharacter } from '@api/__mocks__/character-details';
 import {
@@ -5,7 +6,6 @@ import {
   useGetCharactersByNameQuery,
 } from '@api/rickAndMorty';
 import { configureStore } from '@reduxjs/toolkit/react';
-import selectionReducer from '@store/selectionSlice';
 import '@testing-library/jest-dom';
 import { act, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-export default function NotFoundPage() {
+export default function NotFound() {
   const navLinkClassName =
     'px-2 text-lg font-bold hover:cursor-pointer inline-flex rounded-full px-3 py-1.5 bg-blue-500' +
     ' hover:bg-blue-600 ';

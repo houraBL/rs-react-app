@@ -1,7 +1,10 @@
+'use client';
+
 import IconMoon from '@assets/icon-moon.svg';
 import IconSun from '@assets/icon-sun.svg';
 import useTheme from '@hooks/useTheme';
-import { NavLink } from 'react-router-dom';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Header() {
   const { theme, toggleTheme } = useTheme();
@@ -14,15 +17,17 @@ export default function Header() {
 
   return (
     <header className="z-40 sticky top-0 h-14 bg-blue-400 dark:bg-blue-600 drop-shadow-xl drop-shadow-blue-500 dark:drop-shadow-blue-950 flex flex-wrap gap-2 items-center justify-center ">
-      <NavLink to={'/1'} className={navLinkClassName + isLinkActive}>
+      <Link href={'/1'} className={navLinkClassName + isLinkActive}>
         Home
-      </NavLink>
-      <NavLink to={'about'} className={navLinkClassName + isLinkActive}>
+      </Link>
+      <Link href={'about'} className={navLinkClassName + isLinkActive}>
         About
-      </NavLink>
+      </Link>
       <button className={navLinkClassName + ' px-0'} onClick={toggleTheme}>
-        <img
-          src={theme === 'dark' ? IconSun : IconMoon}
+        <Image
+          src={theme === 'dark' ? IconSun.src : IconMoon.src}
+          width={32}
+          height={32}
           className="h-8 w-8 "
           alt={theme === 'dark' ? 'Light theme' : 'Dark theme'}
         />

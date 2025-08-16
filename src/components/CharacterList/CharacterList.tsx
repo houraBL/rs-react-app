@@ -1,8 +1,10 @@
+'use client';
+
 import { useGetCharactersByNameQuery } from '@api/rickAndMorty';
 import CharacterCard from '@components/CharacterCard';
 import MainLoader from '@components/MainLoader';
+import { notFound, useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 
 type CharacterListProps = {
   searchedTerm: string;
@@ -12,15 +14,16 @@ export default function CharacterList({
   searchedTerm,
   setTotalPages,
 }: CharacterListProps) {
-  const { pageId } = useParams();
-  const navigate = useNavigate();
-
+  const params = useParams();
+  const router = useRouter();
+  const pageId = params?.pageId as string | undefined;
   const page = Number(pageId ?? '1');
+
   useEffect(() => {
-    if (Number.isNaN(page) || typeof page !== 'number') {
-      navigate('/not-found', { replace: true });
+    if (Number.isNaN(page) || typeof page !== 'number' || page < 1) {
+      notFound();
     }
-  }, [page, navigate]);
+  }, [page, router]);
 
   const { data, error, isLoading, isFetching, refetch } =
     useGetCharactersByNameQuery({
@@ -53,7 +56,7 @@ export default function CharacterList({
     const { status } = error as { status: number; data: unknown };
 
     if (status === 404) {
-      setTotalPages(0);
+      notFound();
     }
 
     message = messages[status] ?? message;
@@ -66,16 +69,21 @@ export default function CharacterList({
   }
 
   return (
-    <div
-      className="flex flex-wrap flex-row gap-2 sm:gap-6 p-2 py-4 items-center justify-center "
-      aria-label="characters-cards-container"
-    >
-      {data &&
-        data.results.map((characterInfo) => (
-          <CharacterCard key={characterInfo.id} characterInfo={characterInfo} />
-        ))}
+    <div className="flex flex-col items-center justify-center">
+      <div
+        className="flex flex-wrap flex-row gap-2 sm:gap-6 p-2 py-4 items-center justify-center "
+        aria-label="characters-cards-container"
+      >
+        {data &&
+          data.results.map((characterInfo) => (
+            <CharacterCard
+              key={characterInfo.id}
+              characterInfo={characterInfo}
+            />
+          ))}
+      </div>
       <button
-        className="px-4 rounded-full h-10 border-2 border-white bg-cyan-400 dark:bg-cyan-600 hover:cursor-pointer text-lg font-bold fixed z-50 bottom-16 right-4"
+        className="px-4 rounded-full h-10 w-fit border-2 border-white bg-cyan-400 dark:bg-cyan-600 hover:cursor-pointer text-lg font-bold"
         onClick={() => refetch()}
       >
         force new API call
