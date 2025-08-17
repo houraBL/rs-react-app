@@ -2,6 +2,7 @@
 
 import { useGetCharacterByIdQuery } from '@api/rickAndMorty';
 import MainLoader from '@components/MainLoader';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useRef } from 'react';
 
@@ -99,16 +100,23 @@ export default function DetailsPanel({
         ✕
       </button>
       <h2 className="text-sm sm:text-xl font-bold">{data.name}</h2>
-      <img src={data.image} className="rounded-3xl" alt={data.name} />
+      <div className="relative shrink-0 min-w-32 sm:min-w-48 min-h-32 sm:min-h-48">
+        <Image
+          src={data.image ?? ''}
+          className="rounded-3xl object-cover"
+          alt={data.name}
+          fill
+        />
+      </div>
       <p className="text-sm sm:text-lg">Status: {data.status}</p>
       <p className="text-sm sm:text-lg">Species: {data.species}</p>
       <p className="text-sm sm:text-lg">Gender: {data.gender}</p>
       <p className="text-sm sm:text-lg">Origin: {data.origin?.name}</p>
       <button
-        className="px-4 rounded-full h-10 border-2 border-white bg-cyan-400 dark:bg-cyan-600 hover:cursor-pointer text-lg font-bold z-50"
+        className="px-4 rounded-full h-8 sm:h-10 border-2 border-white bg-cyan-400 dark:bg-cyan-600 hover:cursor-pointer font-bold z-50 text-sm sm:text-lg"
         onClick={() => refetch()}
       >
-        refetch details
+        refetch
       </button>
     </div>
   );

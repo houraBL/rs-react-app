@@ -32,6 +32,12 @@ export default function Header() {
           alt={theme === 'dark' ? 'Light theme' : 'Dark theme'}
         />
       </button>
+      <button
+        className={navLinkClassName + ' px-0'}
+        onClick={() => console.log('language')}
+      >
+        Language
+      </button>
     </header>
   );
 }

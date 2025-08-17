@@ -3,6 +3,7 @@
 import createCVSDownloadURL from '@/utils/createCVSDownloadURL';
 import { unselectAll } from '@/utils/selectionSlice';
 import type { RootState } from '@app/store';
+import Link from 'next/link';
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -43,12 +44,13 @@ export default function FlyoutDownload() {
         <button className={buttonClassName} onClick={handleDownload}>
           Download
         </button>
-        <a
+        <Link
           data-testid="download-link"
           ref={hiddenLink}
           className="hidden"
           download={`${selectedItems.length}_items.csv`}
-        ></a>
+          href={''}
+        />
       </div>
     </div>
   );

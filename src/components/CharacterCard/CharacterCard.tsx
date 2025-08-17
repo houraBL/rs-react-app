@@ -3,6 +3,7 @@
 import type { CharacterInfo } from '@/types/characterInfo';
 import { toggleItem } from '@/utils/selectionSlice';
 import type { RootState } from '@app/store';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useSearchParams } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
@@ -52,11 +53,14 @@ export default function CharacterCard({
       />
       <Link href={href}>
         <div className="flex flex-col gap-2 w-full h-full pt-4 px-2 sm:p-6 pb-0 sm:pb-0">
-          <img
-            src={characterInfo?.image}
-            className="rounded-3xl w-24 h-24 mx-auto sm:w-32 sm:h-32"
-            alt="Character portrait"
-          />
+          <div className="relative shrink-0 rounded-3xl w-24 h-24 mx-auto sm:w-32 sm:h-32">
+            <Image
+              src={characterInfo.image ?? ''}
+              className="rounded-3xl object-cover"
+              alt="Character portrait"
+              fill
+            />
+          </div>
           <div className="text-xs sm:font-bold sm:text-base overflow-hidden h-16 sm:h-full">
             {characterInfo?.name}
           </div>
