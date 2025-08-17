@@ -1,7 +1,7 @@
+import selectionReducer from '@/utils/selectionSlice';
 import { mockCharacter } from '@api/__mocks__/character-details';
 import useLocalStorage from '@hooks/useLocalStorage';
 import { configureStore } from '@reduxjs/toolkit';
-import selectionReducer from '@store/selectionSlice';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

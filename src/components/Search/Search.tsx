@@ -1,10 +1,12 @@
+'use client';
+
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   type ChangeEvent,
   type FormEvent,
   useLayoutEffect,
   useState,
 } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 
 type SearchProps = {
   onSearchSubmit: (searchTerm: string) => void;
@@ -13,21 +15,22 @@ type SearchProps = {
 
 export default function Search({ onSearchSubmit, searchQuery }: SearchProps) {
   const [inputValue, setInputValue] = useState(searchQuery);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const urlSearch = searchParams.get('name');
+  const urlSearch = searchParams?.get('name') || '';
   useLayoutEffect(() => {
     if (!urlSearch) {
       if (searchQuery && searchQuery !== '') {
-        setSearchParams({ name: searchQuery });
+        const params = new URLSearchParams(searchParams?.toString() || '');
+        params.set('name', searchQuery);
       } else if (searchQuery === '') {
         setInputValue(searchQuery);
       }
     } else {
       setInputValue(urlSearch);
     }
-  }, [urlSearch, searchQuery, setSearchParams]);
+  }, [urlSearch, searchQuery, searchParams]);
 
   const handleSearchInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -35,8 +38,11 @@ export default function Search({ onSearchSubmit, searchQuery }: SearchProps) {
 
   const submitSearch = (term: string) => {
     const trimmed = term.trim();
-    setSearchParams({});
-    navigate(`/1`);
+    if (trimmed) {
+      router.replace(`/1?name=${encodeURIComponent(trimmed)}`);
+    } else {
+      router.replace(`/1`);
+    }
     setInputValue(trimmed);
     onSearchSubmit(trimmed);
   };

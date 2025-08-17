@@ -38,15 +38,15 @@ describe('Header', () => {
       </ThemeProvider>
     );
     const themeButton = screen.getByRole('button');
-    const imgage = screen.getByRole('img');
-    expect(imgage).toHaveAttribute('src', expect.stringContaining('moon.svg'));
-    expect(imgage).toHaveAttribute('alt', 'Dark theme');
+    const image = screen.getByRole('img');
+    expect(image).toHaveAttribute('src', expect.stringContaining('moon.svg'));
+    expect(image).toHaveAttribute('alt', 'Dark theme');
     await userEvent.click(themeButton);
-    expect(imgage).toHaveAttribute('src', expect.stringContaining('sun.svg'));
-    expect(imgage).toHaveAttribute('alt', 'Light theme');
+    expect(image).toHaveAttribute('src', expect.stringContaining('sun.svg'));
+    expect(image).toHaveAttribute('alt', 'Light theme');
     await userEvent.click(themeButton);
-    expect(imgage).toHaveAttribute('src', expect.stringContaining('moon.svg'));
-    expect(imgage).toHaveAttribute('alt', 'Dark theme');
+    expect(image).toHaveAttribute('src', expect.stringContaining('moon.svg'));
+    expect(image).toHaveAttribute('alt', 'Dark theme');
   });
 
   it('Throws error when outside of theme provider', async () => {

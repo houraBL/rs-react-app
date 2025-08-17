@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 
 export const LS_KEYS = {
@@ -9,13 +11,25 @@ const useLocalStorage = (
   key: string,
   initialValue: string = ''
 ): [string, React.Dispatch<React.SetStateAction<string>>] => {
-  const [value, setValue] = useState<string>(() => {
-    const stored = localStorage.getItem(key);
-    return stored !== null ? stored : initialValue;
-  });
+  const [value, setValue] = useState<string>(initialValue);
 
   useEffect(() => {
-    localStorage.setItem(key, value);
+    try {
+      const stored = window.localStorage.getItem(key);
+      if (stored !== null) {
+        setValue(stored);
+      }
+    } catch (err) {
+      console.error('useLocalStorage get error:', err);
+    }
+  }, [key]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(key, value);
+    } catch (err) {
+      console.error('useLocalStorage set error:', err);
+    }
   }, [key, value]);
 
   return [value, setValue];

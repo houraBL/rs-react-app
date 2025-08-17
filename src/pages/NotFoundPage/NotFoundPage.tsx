@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import Link from 'next/link';
 
 export default function NotFoundPage() {
   const navLinkClassName =
@@ -7,9 +7,9 @@ export default function NotFoundPage() {
   return (
     <div className="p-4 flex flex-col gap-2 items-center justify-center">
       <h1 className="text-2xl font-bold">Page not found</h1>
-      <NavLink to={'/'} className={navLinkClassName}>
+      <Link href={'/'} className={navLinkClassName}>
         Back home
-      </NavLink>
+      </Link>
     </div>
   );
 }

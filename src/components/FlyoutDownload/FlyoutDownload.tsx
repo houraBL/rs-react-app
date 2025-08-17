@@ -1,5 +1,9 @@
+'use client';
+
+import createCVSDownloadURL from '@/utils/createCVSDownloadURL';
+import { unselectAll } from '@/utils/selectionSlice';
 import type { RootState } from '@app/store';
-import { unselectAll } from '@store/selectionSlice';
+import Link from 'next/link';
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -11,30 +15,7 @@ export default function FlyoutDownload() {
   const hiddenLink = useRef<HTMLAnchorElement | null>(null);
 
   const handleDownload = () => {
-    const csvRows = [
-      [
-        'Name',
-        'Image URL',
-        'Status',
-        'Species',
-        'Gender',
-        'Origin',
-        'Character URL',
-      ],
-      ...selectedItems.map((character) => [
-        character.name,
-        character.image,
-        character.status,
-        character.species,
-        character.gender,
-        character.origin?.name,
-        character.url,
-      ]),
-    ];
-
-    const csvContent = csvRows.map((row) => row.join(',')).join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
+    const url = createCVSDownloadURL(selectedItems);
 
     const link = hiddenLink.current;
     if (link) {
@@ -63,12 +44,13 @@ export default function FlyoutDownload() {
         <button className={buttonClassName} onClick={handleDownload}>
           Download
         </button>
-        <a
+        <Link
           data-testid="download-link"
           ref={hiddenLink}
           className="hidden"
           download={`${selectedItems.length}_items.csv`}
-        ></a>
+          href={''}
+        />
       </div>
     </div>
   );

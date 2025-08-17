@@ -1,38 +1,53 @@
+'use client';
+
+import DetailsPanel from '@/components/DetailsPanel';
 import CharacterList from '@components/CharacterList';
 import FlyoutDownload from '@components/FlyoutDownload';
 import Pagination from '@components/Pagination';
 import Search from '@components/Search';
 import useLocalStorage from '@hooks/useLocalStorage';
+import { notFound, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import {
-  Outlet,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from 'react-router-dom';
 
-export default function HomePage() {
+export default function HomePage({
+  pageId,
+  detailsId,
+}: {
+  pageId: string;
+  detailsId?: string;
+}) {
   const [localSearchTerm, setLocalSearchTerm] = useLocalStorage('search', '');
-  const { pageId } = useParams();
-  const navigate = useNavigate();
+  const router = useRouter();
   const [totalPages, setTotalPages] = useState(1);
-  const [, setSearchParams] = useSearchParams();
+  const searchParams = useSearchParams();
 
   const page = Number(pageId ?? '1');
+  useEffect(() => {
+    if (Number.isNaN(page) || typeof page !== 'number' || page < 1) {
+      notFound();
+    }
+  }, [page, pageId, router]);
+
+  const querySearchTerm = searchParams?.get('name') ?? localSearchTerm;
 
   useEffect(() => {
-    if (pageId && isNaN(Number(pageId))) {
-      navigate('/not-found', { replace: true });
+    if (querySearchTerm !== localSearchTerm) {
+      setLocalSearchTerm(querySearchTerm);
     }
-  }, [navigate, pageId]);
+  }, [querySearchTerm, localSearchTerm, setLocalSearchTerm]);
+
+  const buildUrl = (page: number) => {
+    const params = new URLSearchParams(searchParams?.toString() || '');
+    if (localSearchTerm.trim() !== '') {
+      params.set('name', localSearchTerm);
+    } else {
+      params.delete('name');
+    }
+    return params.toString() ? `/${page}?${params.toString()}` : `/${page}`;
+  };
 
   const handlePageChange = (newPage: number) => {
-    navigate(`/${newPage}`);
-    if (localSearchTerm.trim() !== '') {
-      setSearchParams({ name: localSearchTerm });
-    } else {
-      setSearchParams({});
-    }
+    router.replace(buildUrl(newPage));
   };
 
   return (
@@ -43,10 +58,10 @@ export default function HomePage() {
       />
       <div className="flex flex-grow justify-between">
         <CharacterList
-          searchedTerm={localSearchTerm}
+          searchedTerm={querySearchTerm}
           setTotalPages={setTotalPages}
         />
-        <Outlet />
+        {detailsId && <DetailsPanel detailsId={detailsId} pageId={pageId} />}
       </div>
       <Pagination
         currentPage={page}

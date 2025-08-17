@@ -1,14 +1,28 @@
+'use client';
+
 import { useGetCharacterByIdQuery } from '@api/rickAndMorty';
 import MainLoader from '@components/MainLoader';
-import { useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import Image from 'next/image';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useRef } from 'react';
 
-export default function DetailsPanel() {
-  const { detailsId, pageId } = useParams();
+export default function DetailsPanel({
+  detailsId,
+  pageId,
+}: {
+  detailsId: string;
+  pageId: string;
+}) {
   const panelRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { data, error, isLoading, isFetching, refetch } =
     useGetCharacterByIdQuery(detailsId?.toString() || '1');
+
+  const getBaseUrl = useCallback(() => {
+    const params = searchParams?.toString();
+    return params ? `/${pageId}?${params}` : `/${pageId}`;
+  }, [pageId, searchParams]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -24,7 +38,7 @@ export default function DetailsPanel() {
       }
 
       if ((clickedOutsidePanel && !clickedCard) || clickedCheckbox) {
-        navigate(`/${pageId ?? ''}`, { replace: true });
+        router.replace(getBaseUrl());
       }
     };
 
@@ -32,7 +46,7 @@ export default function DetailsPanel() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [navigate, pageId]);
+  }, [getBaseUrl, pageId, router]);
 
   const detailsClassName =
     'relative sticky top-20 my-4 mx-2 sm:mx-6 p-4 px-4 sm:px-6 h-fit bg-blue-100 dark:bg-blue-600 rounded-3xl flex flex-col gap-2 min-w-40 w-60 sm:min-w-60';
@@ -76,7 +90,7 @@ export default function DetailsPanel() {
     <div className={detailsClassName} ref={panelRef}>
       <button
         type="button"
-        onClick={() => navigate(`/${pageId ?? ''}`, { replace: true })}
+        onClick={() => router.replace(getBaseUrl())}
         className={
           'w-6 h-6 flex items-center justify-center text-lg font-bold cursor-pointer rounded-full absolute -right-1.5 -top-1.5 ' +
           'text-white bg-blue-400 hover:bg-blue-500 dark:text-blue-900 dark:bg-blue-400 dark:hover:bg-blue-500'
@@ -86,16 +100,23 @@ export default function DetailsPanel() {
         ✕
       </button>
       <h2 className="text-sm sm:text-xl font-bold">{data.name}</h2>
-      <img src={data.image} className="rounded-3xl" alt={data.name} />
+      <div className="relative shrink-0 min-w-32 sm:min-w-48 min-h-32 sm:min-h-48">
+        <Image
+          src={data.image ?? ''}
+          className="rounded-3xl object-cover"
+          alt={data.name}
+          fill
+        />
+      </div>
       <p className="text-sm sm:text-lg">Status: {data.status}</p>
       <p className="text-sm sm:text-lg">Species: {data.species}</p>
       <p className="text-sm sm:text-lg">Gender: {data.gender}</p>
       <p className="text-sm sm:text-lg">Origin: {data.origin?.name}</p>
       <button
-        className="px-4 rounded-full h-10 border-2 border-white bg-cyan-400 dark:bg-cyan-600 hover:cursor-pointer text-lg font-bold z-50"
+        className="px-4 rounded-full h-8 sm:h-10 border-2 border-white bg-cyan-400 dark:bg-cyan-600 hover:cursor-pointer font-bold z-50 text-sm sm:text-lg"
         onClick={() => refetch()}
       >
-        refetch details
+        refetch
       </button>
     </div>
   );
