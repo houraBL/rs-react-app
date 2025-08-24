@@ -1,9 +1,6 @@
+import { GIT_LINK, RSS_LINK } from '@app/constants';
 import IconGithub from '@assets/icon-github.svg';
 import IconRSS from '@assets/icon-rss.svg';
-
-export const API_LINK = 'https://rickandmortyapi.com/';
-export const RSS_LINK = 'https://rs.school/courses/reactjs';
-export const GIT_LINK = 'https://github.com/houraBL';
 
 export default function Footer() {
   return (

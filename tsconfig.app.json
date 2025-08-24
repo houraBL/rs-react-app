@@ -32,7 +32,7 @@
       "@hooks/*": ["src/hooks/*"],
       "@pages/*": ["src/pages/*"],
       "@providers/*": ["src/providers"],
-      "@store/*": ["src/store/*"],
+      "@features/*": ["src/features/*"],
       "@types/*": ["src/types/*"],
       "@/*": ["src/*"]
     }

@@ -1,40 +1,56 @@
+import { BUTTON_STYLE } from '@app/constants';
+import image_choice from '@assets/whatever.png';
 import ModalDialog from '@components/ModalDialog';
+import RHFForm from '@components/RHFForm';
+import UncontrolledForm from '@components/UncontrolledForm';
 import { useState } from 'react';
-
-export const BUTTON_STYLE =
-  'px-4 py-2 rounded-3xl hover:cursor-pointer disabled:cursor-default disabled:bg-blue-200 text-blue-900 bg-blue-300 hover:bg-blue-500 dark:disabled:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white';
 
 export default function Main() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [content, setContent] = useState('');
+  const [formType, setFormType] = useState<'uncontrolled' | 'rhf' | null>(null);
 
   return (
-    <div>
-      <button
-        className={BUTTON_STYLE}
-        onClick={() => {
-          setContent('Modal 1');
-          setIsModalOpen(true);
-        }}
-      >
-        Modal 1
-      </button>
-      <button
-        className={BUTTON_STYLE}
-        onClick={() => {
-          setContent('Modal 2');
-          setIsModalOpen(true);
-        }}
-      >
-        Modal 2
-      </button>
-      {isModalOpen && (
+    <div className="flex flex-col bg-blue-100 p-6 m-2 rounded-3xl gap-4">
+      <img src={image_choice} />
+      <h2>
+        OMG look! You can select which form to fill! (they are the same form)
+      </h2>
+      <div className="flex gap-4 justify-center items-center">
+        <button
+          className={BUTTON_STYLE}
+          onClick={() => {
+            setFormType('uncontrolled');
+            setIsModalOpen(true);
+          }}
+        >
+          Uncontrolled Form
+        </button>
+        <button
+          className={BUTTON_STYLE}
+          onClick={() => {
+            setFormType('rhf');
+            setIsModalOpen(true);
+          }}
+        >
+          React Hook Form
+        </button>
+      </div>
+
+      {isModalOpen && formType && (
         <ModalDialog
-          title={content}
-          message={undefined}
-          buttonText={'YEY'}
+          title={
+            formType === 'uncontrolled'
+              ? 'Uncontrolled Form'
+              : 'React Hook Form'
+          }
           closeModal={() => setIsModalOpen(false)}
-        />
+        >
+          {formType === 'uncontrolled' ? (
+            <UncontrolledForm onSuccess={() => setIsModalOpen(false)} />
+          ) : (
+            <RHFForm onSuccess={() => setIsModalOpen(false)} />
+          )}
+        </ModalDialog>
       )}
     </div>
   );
