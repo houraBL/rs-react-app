@@ -40,20 +40,6 @@ export const BaseSchema = z
       message: 'You must accept T&C',
     }),
     country: z.string().min(1, 'Select a country'),
-
-    imageBase64: z
-      .union([
-        z
-          .string()
-          .startsWith('data:image/', 'Invalid image')
-          .refine(
-            (v) =>
-              v.startsWith('data:image/png') || v.startsWith('data:image/jpeg'),
-            'Only PNG/JPEG allowed'
-          ),
-        z.undefined(),
-      ])
-      .transform((v) => (v === '' ? undefined : v)),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
@@ -113,5 +99,4 @@ export const FORM_FIELDS: FormField[] = [
   },
   { name: 'acceptedTnC', label: 'Accept Terms & Conditions', type: 'checkbox' },
   { name: 'country', label: 'Country', type: 'select' },
-  { name: 'imageBase64', label: 'Profile Picture', type: 'file' },
 ];

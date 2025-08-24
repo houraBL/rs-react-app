@@ -5,8 +5,9 @@ import {
 } from '@/utils/validation';
 import { BUTTON_STYLE } from '@app/constants';
 import type { RootState } from '@app/store';
+import { addSubmission, clearHighlight } from '@features/submissionsSlice';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function UncontrolledForm({
   onSuccess,
@@ -18,6 +19,8 @@ export default function UncontrolledForm({
     Partial<Record<keyof BaseFormValues, string>>
   >({});
 
+  const dispatch = useDispatch();
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -27,7 +30,6 @@ export default function UncontrolledForm({
     const parsedValues = {
       ...values,
       acceptedTnC: formData.get('acceptedTnC') === 'on',
-      imageBase64: '',
     };
 
     const result = BaseSchema.safeParse(parsedValues);
@@ -44,6 +46,13 @@ export default function UncontrolledForm({
 
     console.log('Uncontrolled submit:', result.data);
     setErrors({});
+    dispatch(clearHighlight());
+    dispatch(
+      addSubmission({
+        ...result.data,
+        source: 'uncontrolled',
+      })
+    );
     onSuccess();
   };
 
@@ -61,6 +70,7 @@ export default function UncontrolledForm({
                 <input
                   id={field.name}
                   type={field.type}
+                  name={field.name}
                   placeholder={field.placeholder}
                   className="border p-2 rounded w-full"
                 />
@@ -74,7 +84,7 @@ export default function UncontrolledForm({
             return (
               <div key={field.name} className="flex flex-col gap-2">
                 <label className="flex items-center gap-2">
-                  <input type="checkbox" />
+                  <input type="checkbox" name={field.name} />
                   {field.label}
                 </label>
                 <p className="text-sm text-red-500 h-5 p-1 break-words whitespace-normal">
@@ -89,7 +99,7 @@ export default function UncontrolledForm({
                 <p>{field.label}</p>
                 {field.options?.map((opt) => (
                   <label key={opt.value} className="flex items-center gap-2">
-                    <input type="radio" value={opt.value} />
+                    <input type="radio" value={opt.value} name={field.name} />
                     {opt.label}
                   </label>
                 ))}
@@ -103,7 +113,11 @@ export default function UncontrolledForm({
             return (
               <div key={field.name} className="flex flex-col gap-2">
                 <label htmlFor={field.name}>{field.label}</label>
-                <select id={field.name} className="border p-2 rounded w-full">
+                <select
+                  id={field.name}
+                  className="border p-2 rounded w-full"
+                  name={field.name}
+                >
                   <option value="">Select...</option>
                   {countriesList.map((c) => (
                     <option key={c.code} value={c.name}>
@@ -111,22 +125,6 @@ export default function UncontrolledForm({
                     </option>
                   ))}
                 </select>
-                <p className="text-sm text-red-500 h-5 p-1 break-words whitespace-normal">
-                  {errors[field.name] ?? '\u00A0'}
-                </p>
-              </div>
-            );
-
-          case 'file':
-            return (
-              <div key={field.name} className="flex flex-col gap-2">
-                <label htmlFor={field.name}>{field.label}</label>
-                <input
-                  id={field.name}
-                  type="file"
-                  accept="image/png, image/jpeg"
-                  className="border p-2 rounded"
-                />
                 <p className="text-sm text-red-500 h-5 p-1 break-words whitespace-normal">
                   {errors[field.name] ?? '\u00A0'}
                 </p>

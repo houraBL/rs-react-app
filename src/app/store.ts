@@ -1,5 +1,5 @@
 import countriesReducer from '@features/countriesSlice';
-import submissionsReducer from '@features/countriesSlice';
+import submissionsReducer from '@features/submissionsSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
 import {

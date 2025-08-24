@@ -30,7 +30,7 @@ export default function ModalDialog({
         lastFocusedElement.current.focus();
       }
     };
-  }, []);
+  }, [closeModal]);
   function handleBackdropClick(e: React.MouseEvent<HTMLDivElement>) {
     if (e.target === e.currentTarget) {
       closeModal();

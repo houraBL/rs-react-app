@@ -1,9 +1,10 @@
 import { BaseSchema, FORM_FIELDS } from '@/utils/validation';
 import { BUTTON_STYLE } from '@app/constants';
 import type { RootState } from '@app/store';
+import { addSubmission, clearHighlight } from '@features/submissionsSlice';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { z } from 'zod';
 
 type FormValues = z.infer<typeof BaseSchema>;
@@ -22,10 +23,19 @@ export default function RHFForm({ onSuccess }: Props) {
     mode: 'onChange',
   });
 
+  console.log(isValid);
+
+  const dispatch = useDispatch();
   const countriesList = useSelector((state: RootState) => state.countries);
 
   const onSubmit = (data: FormValues) => {
-    console.log('RHF submit:', data);
+    dispatch(clearHighlight());
+    dispatch(
+      addSubmission({
+        ...data,
+        source: 'rhf',
+      })
+    );
     onSuccess();
   };
 
@@ -105,23 +115,6 @@ export default function RHFForm({ onSuccess }: Props) {
                     </option>
                   ))}
                 </select>
-                <p className="text-sm text-red-500 h-5 p-1 break-words whitespace-normal">
-                  {errors[field.name]?.message ?? '\u00A0'}
-                </p>
-              </div>
-            );
-
-          case 'file':
-            return (
-              <div key={field.name} className="flex flex-col gap-2">
-                <label htmlFor={field.name}>{field.label}</label>
-                <input
-                  id={field.name}
-                  type="file"
-                  accept="image/png, image/jpeg"
-                  {...register(field.name)}
-                  className="border p-2 rounded"
-                />
                 <p className="text-sm text-red-500 h-5 p-1 break-words whitespace-normal">
                   {errors[field.name]?.message ?? '\u00A0'}
                 </p>
