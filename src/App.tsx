@@ -1,19 +1,24 @@
+import { store } from '@app/store';
+import Footer from '@components/Footer';
+import Header from '@components/Header';
+import Main from '@components/Main';
+import { Provider } from 'react-redux';
+
 import './App.css';
-import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
-import Main from './components/Main/Main';
-import { Component } from 'react';
+import { ThemeProvider } from './providers/ThemeProvider';
 
-class App extends Component {
-  render() {
-    return (
-      <>
-        <Header />
-        <Main />
-        <Footer />
-      </>
-    );
-  }
+export default function App() {
+  return (
+    <Provider store={store}>
+      <ThemeProvider>
+        <div className="min-h-screen flex flex-col relative w-full text-blue-900 dark:text-white">
+          <Header />
+          <main className="bg-blue-300 dark:bg-blue-900 flex-grow flex items-center justify-center  text-xl">
+            <Main />
+          </main>
+          <Footer />
+        </div>
+      </ThemeProvider>
+    </Provider>
+  );
 }
-
-export default App;
