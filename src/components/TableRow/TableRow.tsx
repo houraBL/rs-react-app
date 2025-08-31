@@ -1,5 +1,5 @@
 import type { CountryYearData, TableColumn } from '@app/types';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { memo, useLayoutEffect, useRef, useState } from 'react';
 
 function TableRow({
   countryName,
@@ -38,7 +38,7 @@ function TableRow({
 
         const timer = setTimeout(() => {
           setChangedKeys(new Set());
-        }, 300);
+        }, 200);
 
         return () => clearTimeout(timer);
       }
@@ -52,7 +52,7 @@ function TableRow({
       {selectedColumns.map((col) => (
         <td
           key={col.key}
-          className={`border px-4 py-2 transition-colors duration-100 ${
+          className={`border px-4 py-2 transition-colors duration-200 ${
             changedKeys.has(col.key) ? 'bg-blue-400' : ''
           }`}
         >
@@ -63,4 +63,4 @@ function TableRow({
   );
 }
 
-export default TableRow;
+export default memo(TableRow);

@@ -7,6 +7,7 @@ import {
 import type { SortKey, SortOrder, TableColumn } from '@app/types';
 import ColumnsPicker from '@components/ColumnsPicker';
 import ModalDialog from '@components/ModalDialog';
+import { memo, useCallback } from 'react';
 import { useState } from 'react';
 
 type ControlsPanelProps = {
@@ -22,7 +23,7 @@ type ControlsPanelProps = {
   onSortOrderChange: (order: SortOrder) => void;
 };
 
-export default function ControlsPanel({
+function ControlsPanel({
   selectedYear,
   onYearChange,
   filterText,
@@ -35,11 +36,13 @@ export default function ControlsPanel({
   onSortOrderChange,
 }: ControlsPanelProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = useCallback(() => setIsModalOpen(true), []);
+  const closeModal = useCallback(() => setIsModalOpen(false), []);
 
   return (
     <div className="flex gap-4 justify-center items-center flex-wrap">
       <label className="font-semibold">Customize columns:</label>
-      <button className={BUTTON_STYLE} onClick={() => setIsModalOpen(true)}>
+      <button className={BUTTON_STYLE} onClick={openModal}>
         ⚙️
       </button>
       <label htmlFor="name" className="font-semibold">
@@ -90,10 +93,7 @@ export default function ControlsPanel({
         <option value="desc">Descending</option>
       </select>
       {isModalOpen && (
-        <ModalDialog
-          title="Customize visible columns"
-          closeModal={() => setIsModalOpen(false)}
-        >
+        <ModalDialog title="Customize visible columns" closeModal={closeModal}>
           <ColumnsPicker
             availableColumns={AVAILABLE_COLUMNS}
             selectedColumns={selectedColumns}
@@ -107,3 +107,5 @@ export default function ControlsPanel({
     </div>
   );
 }
+
+export default memo(ControlsPanel);
