@@ -9,7 +9,7 @@ export default function TableHeader({
     <thead>
       <tr>
         {selectedColumns.map((col) => (
-          <th key={col.key} className="border px-4 py-2">
+          <th key={col.key} className="border px-4 py-2 min-w-3xs">
             {col.label}
           </th>
         ))}
