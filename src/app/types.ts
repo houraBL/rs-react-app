@@ -37,3 +37,6 @@ export interface CountryTableProps {
   data: CountryYearData[];
   availableColumns: TableColumn[];
 }
+
+export type SortKey = 'name' | 'population';
+export type SortOrder = 'asc' | 'desc';

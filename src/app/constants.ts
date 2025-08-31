@@ -7,35 +7,7 @@ export const API_LINK = 'https://rickandmortyapi.com/';
 export const RSS_LINK = 'https://rs.school/courses/reactjs';
 export const GIT_LINK = 'https://github.com/houraBL';
 
-export const COLUMNS = [
-  {
-    header: 'name',
-    accessorKey: 'country_name',
-  },
-  {
-    header: 'ISO',
-    accessorKey: 'iso_code',
-  },
-  {
-    header: 'population',
-    accessorKey: 'population',
-  },
-  {
-    header: 'year',
-    accessorKey: 'year',
-  },
-  {
-    header: 'co2',
-    accessorKey: 'co2',
-  },
-  {
-    header: 'co2 / person',
-    accessorKey: 'co2_per_capita',
-  },
-];
-
 export const AVAILABLE_COLUMNS: TableColumn[] = [
-  { key: 'name', label: 'Name' },
   { key: 'year', label: 'Year' },
   { key: 'population', label: 'Population' },
   { key: 'co2', label: 'CO₂ Emissions' },
@@ -52,6 +24,11 @@ export const AVAILABLE_COLUMNS: TableColumn[] = [
 
 export const ALWAYS_SHOW_COLUMNS: TableColumn[] = [
   { key: 'name', label: 'Name' },
-  { key: 'year', label: 'Year' },
-  { key: 'population', label: 'Population' },
+  { key: 'iso_code', label: 'ISO' },
 ];
+
+export const CO2_JSON_LINK =
+  'https://nyc3.digitaloceanspaces.com/owid-public/data/co2/owid-co2-data.json';
+
+export const LATEST_YEAR = 2023;
+export const EARLIEST_YEAR = 1750;
