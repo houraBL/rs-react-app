@@ -7,15 +7,15 @@ export default function MainLoader({ color }: MainLoaderProps) {
     <div className="flex flex-row gap-2" data-testid="main-loader">
       <div
         data-testid="bouncing-dot"
-        className={`w-4 h-4 rounded-full animate-bounce ${color ?? 'bg-white dark:bg-blue-500'}`}
+        className={`w-4 h-4 rounded-full animate-bounce ${color ?? 'dark:bg-white bg-blue-500'}`}
       ></div>
       <div
         data-testid="bouncing-dot"
-        className={`w-4 h-4 rounded-full animate-bounce [animation-delay:-.3s] ${color ?? 'bg-white dark:bg-blue-500'}`}
+        className={`w-4 h-4 rounded-full animate-bounce [animation-delay:-.3s] ${color ?? 'dark:bg-white bg-blue-500'}`}
       ></div>
       <div
         data-testid="bouncing-dot"
-        className={`w-4 h-4 rounded-full animate-bounce [animation-delay:-.5s] ${color ?? 'bg-white dark:bg-blue-500'}`}
+        className={`w-4 h-4 rounded-full animate-bounce [animation-delay:-.5s] ${color ?? 'dark:bg-white bg-blue-500'}`}
       ></div>
     </div>
   );
