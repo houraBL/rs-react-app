@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -11,8 +12,13 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+#root {
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+}
+
 body {
   margin: 0;
-  min-width: 320px;
   min-height: 100vh;
 }
